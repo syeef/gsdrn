@@ -1,0 +1,21 @@
+.root {
+  inline-size: var(--size, 36px);
+  block-size: var(--size, 36px);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-weight: 400;
+  /* font-size: calc(var(--size, 36px) * 0.4); */
+  font-size: var(--f5);
+  overflow: hidden;
+
+  border: 1px solid var(--gray-4);
+  /* color: var(--gray-10); */
+  cursor: pointer;
+}
+
+.image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}

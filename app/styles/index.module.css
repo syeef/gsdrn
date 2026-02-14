@@ -1,0 +1,76 @@
+div.container {
+  /* margin: 0 auto; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  /* text-align: center; */
+  /* gap: 16px; */
+  /* text-wrap: balance; */
+  /* border: 1px solid red; */
+}
+
+div.heroContainer {
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+}
+
+div.heroTextContainer {
+  position: absolute;
+  width: 100%;
+  height: 30vh;
+  padding: var(--spacing-extra-extra-large) 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* border: 1px solid red; */
+  z-index: 2;
+}
+
+h1.heroText {
+  font-size: var(--f0) !important;
+  font-weight: 900 !important;
+}
+
+div.heroBackground {
+  position: absolute;
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  /* background-image:
+  url("../assets/images/heroLaptop.png"),
+  url("../assets/images/heroBackground.png"); */
+  background-image: url("../assets/images/heroBackground.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(7px) opacity(0.9);
+}
+
+div.heroLaptop {
+  position: absolute;
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../assets/images/heroLaptop.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  z-index: 1;
+}
+
+div.heroContent {
+  position: absolute;
+}
+
+img.logo {
+  display: block;
+  max-width: 80%;
+  height: auto;
+  margin: 0 auto;
+}
+
+span.highlight {
+  color: #63a501;
+}

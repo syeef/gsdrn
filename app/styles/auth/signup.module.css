@@ -1,0 +1,73 @@
+div.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+div.logoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+div.horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-medium);
+}
+
+div.content {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+div.content form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+div.content form > .formFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+p.terms {
+  /* color: #c9c9c9; */
+  font-size: var(--f5);
+  color: var(--gray-8);
+  text-wrap: balance;
+  text-align: center;
+}
+
+div.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+p.footer {
+  color: var(--gray-8);
+  font-size: var(--f5);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+a.link {
+  transition:
+    color 0.4s,
+    text-decoration 0.4s;
+  color: #5294f6;
+  text-decoration: underline #5294f6;
+}
+
+a.link:hover {
+  color: var(--gray-10);
+  text-decoration: underline var(--gray-10);
+}

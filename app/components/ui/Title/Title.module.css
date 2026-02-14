@@ -1,0 +1,99 @@
+h1.title {
+  color: var(--gray-10);
+  font-size: var(--f1);
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+h2.title {
+  color: var(--gray-10);
+  font-size: var(--f2);
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+h3.title {
+  color: var(--gray-10);
+  font-size: var(--f3);
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+h1.Lora,
+h2.Lora,
+h3.Lora {
+  font-family: Lora;
+  font-weight: 400;
+}
+
+h1.Inter,
+h2.Inter,
+h3.Inter {
+  font-family: "Inter Tight";
+  font-weight: 500;
+}
+
+h1.GoogleSans,
+h2.GoogleSans,
+h3.GoogleSans {
+  font-family: "Google Sans";
+  font-weight: 500;
+}
+
+.headingOrange {
+  /* background: linear-gradient(90deg, rgb(249, 112, 2) 9%, rgb(70, 20, 7) 110%); */
+  background: linear-gradient(
+    90deg,
+    rgb(252, 147, 59) 8%,
+    rgb(126, 43, 17) 80%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.headingBlue {
+  background: linear-gradient(
+    90deg,
+    rgb(119, 172, 249) 8%,
+    rgb(14, 79, 163) 80%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.headingPurple {
+  background: linear-gradient(
+    90deg,
+    rgb(222, 102, 154) 8%,
+    rgb(85, 62, 158) 80%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.headingGreen {
+  background: linear-gradient(90deg, rgb(162, 231, 50) 8%, rgb(54, 85, 17) 80%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.headingGray {
+  background: linear-gradient(90deg, var(--gray-10) 8%, var(--gray-9) 80%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.emphasis {
+  /* font-family: "Instrument Serif", serif; */
+  /* font-style: italic; */
+}

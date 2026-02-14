@@ -1,0 +1,263 @@
+.editor {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  /* padding: var(--spacing-medium) var(--spacing-large); */
+  padding: var(--spacing-large);
+  position: relative;
+}
+
+.editorFrame {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0;
+}
+
+.editorFrame :global(.ProseMirror) {
+  min-height: 100%;
+  outline: none;
+  color: var(--gray-10);
+  font-size: var(--f4);
+  /* line-height: 1.7; */
+  /* line-height: 1.2; */
+  caret-color: var(--gray-10);
+}
+
+.editorFrame :global(.ProseMirror p) {
+  margin: 0 0 0.85rem;
+}
+
+.editorFrame :global(.ProseMirror p:last-child) {
+  margin-bottom: 0;
+}
+
+.editorFrame :global(.ProseMirror h2) {
+  font-size: var(--f3);
+  margin: 1.2rem 0 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+.editorFrame :global(.ProseMirror h3) {
+  font-size: var(--f4);
+  margin: 1rem 0 0.5rem;
+}
+
+.editorFrame :global(.ProseMirror ul),
+.editorFrame :global(.ProseMirror ol) {
+  /* padding-left: 1.4rem; */
+  padding-left: 0;
+  margin: 0 0 0.85rem;
+}
+
+.editorFrame :global(.ProseMirror ul) {
+  list-style: disc;
+  list-style-position: outside;
+}
+
+.editorFrame :global(.ProseMirror ul li)::marker {
+  color: var(--red-6);
+}
+
+.editorFrame div ul li {
+  margin: 0;
+}
+
+.editorNotes :global(.ProseMirror ul) {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.editorNotes :global(.ProseMirror ul ul) {
+  margin-top: 0.35rem;
+  padding-left: 1.4rem;
+}
+
+.editorNotes :global(.ProseMirror li) {
+  display: block;
+  position: relative;
+  padding-left: 1.2rem;
+  list-style: none;
+}
+
+.editorNotes :global(.ProseMirror li::before) {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--gray-9);
+}
+
+.editorNotes :global(.ProseMirror li p) {
+  margin: 0;
+}
+
+.editorTodos :global(.ProseMirror ul) {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.editorTodos :global(.ProseMirror ul ul) {
+  margin-top: 0.35rem;
+  padding-left: 1.4rem;
+}
+
+.editorTodos :global(.ProseMirror li) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: flex-start;
+  gap: 0.65rem;
+  position: relative;
+  padding-left: 1.6rem;
+  list-style: none;
+}
+
+.editorTodos :global(.ProseMirror li::before) {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 10px;
+  height: 10px;
+  background:
+    radial-gradient(circle, var(--gray-7) 30%, transparent 35%),
+    radial-gradient(circle, var(--gray-7) 30%, transparent 35%);
+  background-position:
+    0 0,
+    0 6px;
+  background-size: 10px 10px;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  cursor: grab;
+}
+
+.editorTodos :global(.ProseMirror li:hover::before) {
+  opacity: 0.6;
+}
+
+.editorTodos :global(.ProseMirror li > label) {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  margin: 0 !important;
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.editorTodos :global(.ProseMirror li input[type="checkbox"]) {
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  appearance: none;
+}
+
+.editorTodos :global(.ProseMirror li > label > span) {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-9);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.editorTodos :global(.ProseMirror li > label > span::after) {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--blue-6);
+  transform: scale(0);
+  transition: transform 120ms ease;
+}
+
+.editorTodos
+  :global(.ProseMirror li input[type="checkbox"]:checked + span::after) {
+  transform: scale(1);
+}
+
+.editorTodos :global(.ProseMirror li > div) {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+}
+
+.editorTodos :global(.ProseMirror li[data-checked="true"] > div) {
+  color: var(--gray-9);
+  text-decoration: line-through;
+}
+
+.editorFrame :global(.ProseMirror blockquote) {
+  border-left: 3px solid var(--blue-6);
+  padding-left: var(--spacing-small);
+  margin: 0 0 0.85rem;
+  color: var(--gray-8);
+}
+
+.editorFrame :global(.ProseMirror pre) {
+  background: var(--gray-2);
+  color: var(--gray-10);
+  padding: var(--spacing-small);
+  border-radius: 10px;
+  font-family:
+    "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  font-size: 0.85rem;
+  overflow-x: auto;
+}
+
+.editorFrame :global(.ProseMirror code) {
+  background: var(--gray-2);
+  border-radius: 6px;
+  padding: 0 6px;
+}
+
+.editorFrame :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  color: var(--gray-9);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.editorNotes :global(.ProseMirror li > p.is-editor-empty) {
+  min-height: 1.4em;
+}
+
+.editorNotes :global(.ProseMirror li > p.is-editor-empty::before) {
+  color: var(--gray-9);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.editorFrame :global(.ProseMirror a) {
+  color: var(--blue-7);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.editorFrame :global(.ProseMirror a:hover) {
+  color: var(--blue-8);
+}

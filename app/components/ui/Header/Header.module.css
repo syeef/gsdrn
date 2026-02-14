@@ -1,0 +1,59 @@
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: var(--spacing-medium);
+  border-top: 1px solid var(--gray-4);
+  border-right: 1px solid var(--gray-4);
+  border-bottom: 0;
+  border-left: 1px solid var(--gray-4);
+  /* border: 1px solid red; */
+  position: sticky;
+  top: 0;
+}
+
+div.horizontal {
+  display: flex;
+  /* flex-direction: row; */
+  /* gap: var(--spacing-large); */
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Header.module.css */
+.menuButton {
+  /* color: var(--gray-2); */
+  border: 1px solid var(--gray-4);
+  border-radius: var(--extra-small);
+  background: transparent;
+  padding: 0 var(--spacing-small);
+  line-height: 0;
+  cursor: pointer;
+}
+
+.avatarButton {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  line-height: 0;
+  cursor: pointer;
+}
+
+.horizontal {
+  display: flex;
+  align-items: center;
+}
+
+@media (prefers-color-scheme: light) {
+  header {
+    color: #000000;
+    background-color: var(--gray-1);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  header {
+    color: var(--gray-10);
+    /* background-color: var(--gray-1); */
+  }
+}

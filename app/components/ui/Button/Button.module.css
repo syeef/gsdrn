@@ -1,0 +1,266 @@
+/* Button.module.css */
+
+/* Base Styles */
+button.button {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s,
+    border-color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Disabled State */
+button.buttonDisabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Size Variants */
+button.small {
+  height: 24px;
+  padding: 12px 8px;
+  font-size: var(--f5);
+  line-height: 16px;
+}
+
+button.medium {
+  height: 32px;
+  padding: 8px 16px;
+  font-size: var(--f4);
+  line-height: 20px;
+}
+
+button.large {
+  padding: var(--medium) var(--extra-large);
+  font-size: var(--f4);
+  line-height: 20px;
+}
+
+/* Variants */
+
+/* Primary */
+button.primary {
+  color: var(--gray-1);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--gray-10);
+  }
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 10, 10, 0.16) 0%,
+      rgba(10, 10, 10, 0) 53.65%
+    ),
+    #0078ff;
+  border: 0.4px solid rgba(103, 171, 255, 0.16);
+  box-shadow:
+    0px 0px 0px 1px rgba(103, 171, 255, 0.9),
+    0px 1px 1px rgba(23, 23, 23, 0.2),
+    0px 2px 4px rgba(23, 23, 23, 0.1),
+    0px 3px 8px rgba(23, 23, 23, 0.04),
+    inset 0px 1px 2px rgba(253, 253, 253, 0.24);
+  border-radius: 6px;
+}
+
+button.primary:hover {
+  background-color: var(--blue-2);
+  border-color: var(--blue-5);
+}
+
+button.primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+button.primary::after {
+  opacity: 0.05;
+}
+
+/* Secondary */
+button.secondary {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 10, 10, 0.16) 0%,
+      rgba(10, 10, 10, 0) 53.65%
+    ),
+    #000000;
+  border: 0.4px solid rgba(10, 10, 10, 0.16);
+  box-shadow:
+    0px 0px 0px 1px rgba(0, 0, 0, 0.9),
+    0px 1px 1px rgba(23, 23, 23, 0.2),
+    0px 2px 4px rgba(23, 23, 23, 0.1),
+    0px 3px 8px rgba(23, 23, 23, 0.04),
+    inset 0px 1px 2px rgba(253, 253, 253, 0.24);
+  border-radius: 6px;
+}
+
+button.secondary:hover {
+  border-color: #a8b2b8;
+}
+
+/* Destructive */
+button.destructive {
+  background-color: #d42525;
+  border-color: #e77979;
+}
+
+button.destructive:hover {
+  background-color: #a91e1e;
+  border-color: #efa4a4;
+}
+
+/* Border */
+button.border {
+  background-color: unset;
+  border-color: #727f88;
+  border-width: 2px;
+}
+
+button.border:hover {
+  border-color: #a8b2b8;
+}
+
+/* Borderless */
+button.borderless {
+  color: inherit;
+  background-color: unset;
+}
+button.borderless:hover {
+  background-color: #2f3132;
+  border-color: #727f88;
+}
+
+/* Shine */
+button.shine {
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(
+        180deg,
+        #a8b2b8ff 0%,
+        #a8b2b87a 31%,
+        #a8b2b8cc 78%,
+        #a8b2b852 100%
+      )
+      border-box;
+  background-image:
+    linear-gradient(180deg, #c0bebf 0%, #808281 100%),
+    linear-gradient(
+      180deg,
+      #a8b2b8ff 0%,
+      #a8b2b87a 31%,
+      #a8b2b8cc 78%,
+      #a8b2b852 100%
+    );
+  box-shadow:
+    0px -0.5px 0px 0.25px rgba(0, 0, 0, 0.8),
+    0px 1px 1px rgba(23, 23, 23, 0.16),
+    0px 2px 4px rgba(23, 23, 23, 0.08),
+    0px 3px 8px rgba(23, 23, 23, 0.02);
+  border-radius: 24px;
+
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-image-slice: 100%;
+  border-image-source: none;
+  border-image-width: 1;
+  position: relative;
+  border: solid 1px transparent;
+  padding: 12px 32px;
+  width: 100%;
+  min-width: 156px;
+  height: 40px;
+
+  @media (prefers-color-scheme: dark) {
+    background:
+      linear-gradient(white, white) padding-box,
+      linear-gradient(
+          180deg,
+          #a8b2b8ff 0%,
+          #a8b2b87a 31%,
+          #a8b2b8cc 78%,
+          #a8b2b852 100%
+        )
+        border-box;
+
+    background-image:
+      linear-gradient(#2f3132 0%, #171717 100%),
+      linear-gradient(
+        180deg,
+        #a8b2b8ff 0%,
+        #a8b2b87a 31%,
+        #a8b2b8cc 78%,
+        #a8b2b852 100%
+      );
+  }
+}
+
+button.shine > span {
+  background-color: #000000;
+  color: transparent;
+  text-shadow: 0px 0.48px 0px rgba(255, 255, 255, 0.95);
+  background-clip: text;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+button.shine:hover {
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(
+        180deg,
+        #a8b2b8ff 0%,
+        #a8b2b87a 31%,
+        #a8b2b8cc 78%,
+        #a8b2b852 100%
+      )
+      border-box;
+  background-image:
+    linear-gradient(rgb(37, 38, 43), rgb(37, 38, 43)),
+    linear-gradient(
+      180deg,
+      #a8b2b8ff 0%,
+      #a8b2b87a 31%,
+      #a8b2b8cc 78%,
+      #a8b2b852 100%
+    );
+  @media (prefers-color-scheme: dark) {
+    background:
+      linear-gradient(white, white) padding-box,
+      linear-gradient(
+          180deg,
+          #a8b2b8ff 0%,
+          #a8b2b87a 31%,
+          #a8b2b8cc 78%,
+          #a8b2b852 100%
+        )
+        border-box;
+    /* background-image: linear-gradient(rgb(37, 38, 43), rgb(37, 38, 43)), */
+    background-image:
+      linear-gradient(#0a0a0a, #000000),
+      linear-gradient(
+        180deg,
+        #a8b2b8ff 0%,
+        #a8b2b87a 31%,
+        #a8b2b8cc 78%,
+        #a8b2b852 100%
+      );
+  }
+}
+
+/* Active State */
+button.active {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}

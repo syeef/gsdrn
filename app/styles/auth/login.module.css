@@ -1,0 +1,127 @@
+div.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  height: 100%;
+}
+
+div.illustration {
+  /* background-image: url(../../assets/images/loginBackground.png); */
+  background-image: url(../../assets/images/loginBackgroundFlare.png);
+  /* filter: grayscale(100%); */
+
+  background-size: cover;
+  grid-area: 1 / 1 / 2 / 2;
+  border-radius: 8px;
+
+  /* start value */
+  /* filter: hue-rotate(0deg); */
+
+  /* apply the animation */
+  /* animation: hueShift 45s linear infinite; */
+  animation: hueSwing 45s ease-in-out infinite;
+}
+
+@keyframes hueShift {
+  from {
+    filter: hue-rotate(90deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes hueSwing {
+  0% {
+    filter: hue-rotate(360deg);
+  }
+  50% {
+    filter: hue-rotate(90deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+div.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+div.logoContainer {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+div.horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-medium);
+}
+
+div.content {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+div.content form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+div.content form > .formFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+p.terms {
+  /* color: #c9c9c9; */
+  font-size: var(--f5);
+  color: var(--gray-8);
+  text-wrap: balance;
+  /* text-align: center; */
+}
+
+div.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+p.footer {
+  color: var(--gray-8);
+  font-size: var(--f5);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+button.link:hover {
+  cursor: pointer;
+}
+
+button.link,
+a.link {
+  transition:
+    color 0.4s,
+    text-decoration 0.4s;
+  color: #5294f6;
+  text-decoration: underline #5294f6;
+}
+
+button.link:hover,
+a.link:hover {
+  color: var(--gray-10);
+  text-decoration: underline var(--gray-10);
+}

@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.dateGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  min-width: 0;
+}
+
+.dateText {
+  margin: 0;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-extra-small);
+}
+
+.iconButton {
+  height: 32px;
+  width: 32px;
+  border-radius: 999px;
+  border: 1px solid var(--gray-4);
+  background: var(--gray-1);
+  color: var(--gray-10);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    color 0.2s,
+    transform 0.1s;
+}
+
+.iconButton:hover {
+  background: var(--gray-2);
+  border-color: var(--gray-5);
+}
+
+.iconButton:active {
+  transform: translateY(1px);
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--blue-6);
+  outline-offset: 2px;
+}

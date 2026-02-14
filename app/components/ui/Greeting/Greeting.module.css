@@ -1,0 +1,8 @@
+h1.greeting {
+  font-family: Lora;
+  color: var(--gray-10);
+  font-size: var(--f2);
+  font-weight: 400;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}

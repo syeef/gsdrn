@@ -1,0 +1,39 @@
+div.userMenu {
+  color: var(--gray-9);
+  padding: var(--spacing-small);
+}
+
+div.userMenu > div.metaDetails {
+  padding: 0 var(--spacing-small) var(--spacing-small);
+}
+
+div.metaDetails,
+ul.navList > li {
+  padding: 0 var(--spacing-small);
+}
+
+ul.navList > li > a {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  padding: var(--spacing-small) 0;
+}
+
+button.signOut {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  padding: var(--spacing-small);
+  cursor: pointer;
+}
+
+ul.navList > li:hover,
+button.signOut:hover {
+  border-radius: 4px;
+  background-color: var(--gray-2);
+  color: var(--gray-10);
+}

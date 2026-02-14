@@ -1,0 +1,52 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gsdr-now-app",
+  "compatibility_date": "2025-04-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./workers/app.ts",
+  "vars": {
+    "BETTER_AUTH_URL": "http://localhost:5173",
+    "SITE_URL": "http://localhost:5173",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "production-starter-app",
+      "database_id": "e6990730-1ca0-466b-85cc-f63002aba753",
+      "migrations_dir": "drizzle",
+    },
+  ],
+
+  "env": {
+    // Production details
+    "production": {
+      "vars": {
+        "BETTER_AUTH_URL": "https://gsdr.now",
+        "RESEND_FROM": "Beef Bros <orders@beefbros.co.uk>",
+        "SITE_URL": "https://gsdr.now",
+        "BETTER_AUTH_SECRET": "",
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "production-gsdr-now-app",
+          "database_id": "0b04f967-aaa9-4e6e-9be6-172cb382d0ef",
+          "migrations_dir": "drizzle",
+        },
+      ],
+      "routes": [
+        {
+          "pattern": "gsdr.now",
+          "custom_domain": true,
+        },
+      ],
+    },
+  },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+    },
+  },
+}
