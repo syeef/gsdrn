@@ -2,8 +2,10 @@ hr.tidyHR {
   border: 0;
   height: 2px;
   background-image:
-    linear-gradient(to right, transparent, #000000 10% 90%, transparent),
-    linear-gradient(to right, transparent, #313131 10% 90%, transparent);
+    /* linear-gradient(to right, transparent, #000000 10% 90%, transparent),
+    linear-gradient(to right, transparent, #313131 10% 90%, transparent); */
+    linear-gradient(to right, transparent, #666666 10% 90%, transparent),
+    linear-gradient(to right, transparent, #171717 10% 90%, transparent);
   background-size: 100% 1px;
   background-position:
     0% 0%,

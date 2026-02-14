@@ -14,6 +14,7 @@ import Editor from "~/components/ui/Editor/Editor";
 import { formatDateKey } from "~/utils/date";
 // import HeroLaptop from "~/assets/images/background.png";
 import HeroLaptop from "~/assets/images/background.jpg";
+import NavBar from "~/components/ui/NavBar/NavBar";
 
 const HERO_SOURCE_WIDTH = 1536;
 const HERO_SOURCE_HEIGHT = 1024;
@@ -117,84 +118,78 @@ export default function IndexPage() {
   }, []);
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.heroContainer}>
-          <div className={styles.heroBackground}></div>
-          <div className={styles.heroTextContainer}>
-            <Title
-              as="h1"
-              variant="GoogleSans"
-              headingColor="gray"
-              className={styles.heroText}
-            >
-              Be productive, feel great.
-            </Title>
-          </div>
-          <div className={styles.heroLaptop} ref={heroFrameRef}>
-            <img
-              className={styles.heroLaptopImage}
-              src={HeroLaptop}
-              alt=""
-              aria-hidden="true"
-            />
-            <div
-              className={styles.heroScreen}
-              style={
-                screenRect
-                  ? {
-                      left: `${screenRect.left}px`,
-                      top: `${screenRect.top}px`,
-                      width: `${screenRect.width}px`,
-                      height: `${screenRect.height}px`,
-                    }
-                  : undefined
-              }
-            >
-              <div className={styles.heroScreenInner}>
-                <div className={styles.previewApp}>
-                  <Header dateKey={dateKey} />
-                  <main className={styles.previewMain}>
-                    <section className={styles.previewCalendar}>
-                      <Calendar dateKey={dateKey} />
-                    </section>
-                    <section className={styles.previewEditors}>
-                      <div className={styles.previewPanel}>
-                        <div className={styles.previewPanelHeader}>
-                          <Title variant="Lora" as="h3">
-                            Tasks
-                          </Title>
-                        </div>
-                        <div className={styles.previewPanelBody}>
-                          <Editor mode="todos" dateKey={dateKey} />
-                        </div>
+    <div className={styles.container}>
+      <div className={styles.heroContainer}>
+        <div className={styles.heroNav}>
+          <NavBar />
+        </div>
+        <div className={styles.heroBackground}></div>
+        <div className={styles.heroTextContainer}>
+          <Title
+            as="h1"
+            variant="GoogleSans"
+            headingColor="gray"
+            className={styles.heroText}
+          >
+            Be productive, feel great.
+          </Title>
+        </div>
+        <div className={styles.heroLaptop} ref={heroFrameRef}>
+          <img
+            className={styles.heroLaptopImage}
+            src={HeroLaptop}
+            alt=""
+            aria-hidden="true"
+          />
+          <div
+            className={styles.heroScreen}
+            style={
+              screenRect
+                ? {
+                    left: `${screenRect.left}px`,
+                    top: `${screenRect.top}px`,
+                    width: `${screenRect.width}px`,
+                    height: `${screenRect.height}px`,
+                  }
+                : undefined
+            }
+          >
+            <div className={styles.heroScreenInner}>
+              <div className={styles.previewApp}>
+                <Header dateKey={dateKey} />
+                <main className={styles.previewMain}>
+                  <section className={styles.previewCalendar}>
+                    <Calendar dateKey={dateKey} />
+                  </section>
+                  <section className={styles.previewEditors}>
+                    <div className={styles.previewPanel}>
+                      <div className={styles.previewPanelHeader}>
+                        <Title variant="Lora" as="h3">
+                          Tasks
+                        </Title>
                       </div>
-                      <div className={styles.previewPanel}>
-                        <div className={styles.previewPanelHeader}>
-                          <Title variant="Lora" as="h3">
-                            Notes
-                          </Title>
-                        </div>
-                        <div className={styles.previewPanelBody}>
-                          <Editor mode="notes" dateKey={dateKey} />
-                        </div>
+                      <div className={styles.previewPanelBody}>
+                        <Editor mode="todos" dateKey={dateKey} />
                       </div>
-                    </section>
-                  </main>
-                </div>
+                    </div>
+                    <div className={styles.previewPanel}>
+                      <div className={styles.previewPanelHeader}>
+                        <Title variant="Lora" as="h3">
+                          Notes
+                        </Title>
+                      </div>
+                      <div className={styles.previewPanelBody}>
+                        <Editor mode="notes" dateKey={dateKey} />
+                      </div>
+                    </div>
+                  </section>
+                </main>
               </div>
             </div>
           </div>
         </div>
-
-        <div>
-          <ul>
-            <NavLink to="/signup">Sign Up</NavLink>
-            <NavLink to="/login">Login</NavLink>
-          </ul>
-        </div>
       </div>
-    </>
+    </div>
   );
 }
 

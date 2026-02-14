@@ -1,0 +1,12 @@
+nav.navBarContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--spacing-large) var(--spacing-large) 0;
+}
+
+div.navBarContents {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--spacing-extra-large);
+}
