@@ -14,8 +14,8 @@ export default function HeaderBar({ user, dateKey, isSaving }: HeaderBarProps) {
   return (
     <nav className={styles.navBarContainer}>
       <div className={styles.navBarContents}>
-        GSDRN
-        <Button variant="primary">Log In</Button>
+        Get It Done
+        <Button variant="primary">Get Started</Button>
       </div>
 
       <Hr marginSize="small" />

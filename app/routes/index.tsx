@@ -18,6 +18,9 @@ import NavBar from "~/components/ui/NavBar/NavBar";
 
 const HERO_SOURCE_WIDTH = 1536;
 const HERO_SOURCE_HEIGHT = 1024;
+const HERO_SCENE_HEIGHT_VH = 260;
+const HERO_SCROLL_ANIMATION_DISTANCE_FACTOR = 0.28;
+const HERO_SCREEN_ROTATE_X_START_DEG = 8;
 
 const HERO_SCREEN_BOUNDS = {
   // x: 351,
@@ -52,13 +55,72 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
 export default function IndexPage() {
   const dateKey = React.useMemo(() => formatDateKey(new Date()), []);
+  const heroSceneRef = React.useRef<HTMLElement | null>(null);
   const heroFrameRef = React.useRef<HTMLDivElement | null>(null);
+  const [scrollProgress, setScrollProgress] = React.useState(0);
   const [screenRect, setScreenRect] = React.useState<{
     left: number;
     top: number;
     width: number;
     height: number;
   } | null>(null);
+
+  React.useEffect(() => {
+    let rafId = 0;
+
+    const updateFromScroll = () => {
+      const scene = heroSceneRef.current;
+      if (!scene) return;
+
+      const sceneRect = scene.getBoundingClientRect();
+      const sceneTop = window.scrollY + sceneRect.top;
+      const sceneScrollableDistance = Math.max(
+        sceneRect.height - window.innerHeight,
+        1,
+      );
+      const sceneScroll = Math.min(
+        Math.max(window.scrollY - sceneTop, 0),
+        sceneScrollableDistance,
+      );
+      const introDistance = Math.max(
+        window.innerHeight * HERO_SCROLL_ANIMATION_DISTANCE_FACTOR,
+        1,
+      );
+      const nextProgress = Math.min(sceneScroll / introDistance, 1);
+      setScrollProgress((current) =>
+        Math.abs(current - nextProgress) > 0.001 ? nextProgress : current,
+      );
+    };
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        updateFromScroll();
+      });
+    };
+
+    updateFromScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateFromScroll);
+
+    return () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateFromScroll);
+    };
+  }, []);
+
+  const heroImageOpacity = 1 - scrollProgress;
+  const heroLaptopStyle = React.useMemo(
+    () =>
+      ({
+        "--screen-rotate-x": `${HERO_SCREEN_ROTATE_X_START_DEG * (1 - scrollProgress)}deg`,
+      }) as React.CSSProperties,
+    [scrollProgress],
+  );
 
   React.useEffect(() => {
     const frame = heroFrameRef.current;
@@ -119,76 +181,87 @@ export default function IndexPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.heroContainer}>
-        <div className={styles.heroNav}>
-          <NavBar />
-        </div>
-        <div className={styles.heroBackground}></div>
-        <div className={styles.heroTextContainer}>
-          <Title
-            as="h1"
-            variant="GoogleSans"
-            headingColor="gray"
-            className={styles.heroText}
-          >
-            Be productive, feel great.
-          </Title>
-        </div>
-        <div className={styles.heroLaptop} ref={heroFrameRef}>
-          <img
-            className={styles.heroLaptopImage}
-            src={HeroLaptop}
-            alt=""
-            aria-hidden="true"
-          />
+      <section
+        className={styles.heroScene}
+        style={{ minHeight: `${HERO_SCENE_HEIGHT_VH}vh` }}
+        ref={heroSceneRef}
+      >
+        <div className={styles.heroContainer}>
+          <div className={styles.heroNav}>
+            <NavBar />
+          </div>
+          <div className={styles.heroBackground}></div>
+          <div className={styles.heroTextContainer}>
+            <Title
+              as="h1"
+              variant="GoogleSans"
+              headingColor="orange"
+              className={styles.heroText}
+            >
+              Less chaos. More progress.
+            </Title>
+          </div>
           <div
-            className={styles.heroScreen}
-            style={
-              screenRect
-                ? {
-                    left: `${screenRect.left}px`,
-                    top: `${screenRect.top}px`,
-                    width: `${screenRect.width}px`,
-                    height: `${screenRect.height}px`,
-                  }
-                : undefined
-            }
+            className={styles.heroLaptop}
+            ref={heroFrameRef}
+            style={heroLaptopStyle}
           >
-            <div className={styles.heroScreenInner}>
-              <div className={styles.previewApp}>
-                <Header dateKey={dateKey} />
-                <main className={styles.previewMain}>
-                  <section className={styles.previewCalendar}>
-                    <Calendar dateKey={dateKey} />
-                  </section>
-                  <section className={styles.previewEditors}>
-                    <div className={styles.previewPanel}>
-                      <div className={styles.previewPanelHeader}>
-                        <Title variant="Lora" as="h3">
-                          Tasks
-                        </Title>
+            <img
+              className={styles.heroLaptopImage}
+              src={HeroLaptop}
+              alt=""
+              aria-hidden="true"
+              style={{ opacity: heroImageOpacity }}
+            />
+            <div
+              className={styles.heroScreen}
+              style={
+                screenRect
+                  ? {
+                      left: `${screenRect.left}px`,
+                      top: `${screenRect.top}px`,
+                      width: `${screenRect.width}px`,
+                      height: `${screenRect.height}px`,
+                    }
+                  : undefined
+              }
+            >
+              <div className={styles.heroScreenInner}>
+                <div className={styles.previewApp}>
+                  <Header dateKey={dateKey} />
+                  <main className={styles.previewMain}>
+                    <section className={styles.previewCalendar}>
+                      <Calendar dateKey={dateKey} />
+                    </section>
+                    <section className={styles.previewEditors}>
+                      <div className={styles.previewPanel}>
+                        <div className={styles.previewPanelHeader}>
+                          <Title variant="Lora" as="h3">
+                            Tasks
+                          </Title>
+                        </div>
+                        <div className={styles.previewPanelBody}>
+                          <Editor mode="todos" dateKey={dateKey} />
+                        </div>
                       </div>
-                      <div className={styles.previewPanelBody}>
-                        <Editor mode="todos" dateKey={dateKey} />
+                      <div className={styles.previewPanel}>
+                        <div className={styles.previewPanelHeader}>
+                          <Title variant="Lora" as="h3">
+                            Notes
+                          </Title>
+                        </div>
+                        <div className={styles.previewPanelBody}>
+                          <Editor mode="notes" dateKey={dateKey} />
+                        </div>
                       </div>
-                    </div>
-                    <div className={styles.previewPanel}>
-                      <div className={styles.previewPanelHeader}>
-                        <Title variant="Lora" as="h3">
-                          Notes
-                        </Title>
-                      </div>
-                      <div className={styles.previewPanelBody}>
-                        <Editor mode="notes" dateKey={dateKey} />
-                      </div>
-                    </div>
-                  </section>
-                </main>
+                    </section>
+                  </main>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
