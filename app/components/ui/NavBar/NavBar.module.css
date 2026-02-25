@@ -3,6 +3,7 @@ nav.navBarContainer {
   flex-direction: column;
   width: 100%;
   padding: var(--spacing-large) var(--spacing-large) 0;
+  backdrop-filter: blur(8px);
 }
 
 div.navBarContents {

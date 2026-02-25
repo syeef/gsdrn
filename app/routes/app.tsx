@@ -8,8 +8,8 @@ import { getAuth } from "~/lib/auth.server";
 import { formatDateKey } from "~/utils/date";
 
 export const meta: MetaFunction = () => [
-  { title: "GSDRN" },
-  { name: "description", content: "Get Shit Done Right Now" },
+  { title: "Tickatana" },
+  { name: "description", content: "Where Tasks Get Done" },
 ];
 
 export async function loader({ request, context }: LoaderFunctionArgs) {

@@ -1,7 +1,8 @@
 import type { LoaderFunctionArgs } from "react-router";
-import IndexPage, { meta } from "./index";
+// import IndexPage, { meta } from "./index";
+import IndexPage from "./index";
 
-export { meta };
+// export { meta };
 
 export async function loader(_args: LoaderFunctionArgs) {
   return null;

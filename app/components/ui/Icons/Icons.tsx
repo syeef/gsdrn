@@ -7,6 +7,31 @@ type IconProps = React.SVGProps<SVGSVGElement> & {
   width?: number | string;
 };
 
+export function LogoMark({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  className,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M11 7C11 8.10457 11.8954 9 13 9L19 9C20.1046 9 21 8.10457 21 7V1C21 0.447715 21.4477 0 22 0C22.5523 0 23 0.447715 23 1V7C23 8.10457 23.8954 9 25 9H31C31.5523 9 32 9.44772 32 10C32 10.5523 31.5523 11 31 11H25C23.8954 11 23 11.8954 23 13V19C23 20.1046 23.8954 21 25 21H31C31.5523 21 32 21.4477 32 22C32 22.5523 31.5523 23 31 23H25C23.8954 23 23 23.8954 23 25V31C23 31.5523 22.5523 32 22 32C21.4477 32 21 31.5523 21 31V25C21 23.8954 20.1046 23 19 23H13C11.8954 23 11 23.8954 11 25V31C11 31.5523 10.5523 32 10 32C9.44772 32 9 31.5523 9 31V25C9 23.8954 8.10457 23 7 23H1C0.447715 23 0 22.5523 0 22C0 21.4477 0.447715 21 1 21H9L9 13C9 11.8954 8.10457 11 7 11H1C0.447715 11 0 10.5523 0 10C0 9.44772 0.447715 9 1 9H7C8.10457 9 9 8.10457 9 7V1C9 0.447715 9.44772 0 10 0C10.5523 0 11 0.447715 11 1V7ZM13 11C11.8954 11 11 11.8954 11 13L11 19C11 20.1046 11.8954 21 13 21H19C20.1046 21 21 20.1046 21 19V13C21 11.8954 20.1046 11 19 11L13 11Z"
+        fill={color}
+      />
+    </svg>
+  );
+}
+
 export function Icon10SecondsBackwards({
   color = "currentColor",
   height = 24,
@@ -484,6 +509,31 @@ export function IconCursor({
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconCursorList({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.75 9H15.25M10.75 12H15.25M10.75 15H15.25M0.75 1L2.86111 11.5L5.5 6.75L10.25 5.31818L0.75 1Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </svg>
   );
@@ -1140,6 +1190,45 @@ export function IconNew({
   );
 }
 
+export function IconOrderedList({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0.75 2.25L2.25 0.75V6.25M2.25 6.25H0.75M2.25 6.25H3.25"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M9.25 10.25H7.6562C6.9255 10.25 6.5182 9.4359 6.9058 8.8574C6.9535 8.7861 7.0211 8.7311 7.0925 8.6836L8.8924 7.486C8.9638 7.4384 9.0312 7.3832 9.0799 7.3126C9.5253 6.6678 9.0713 5.75 8.2526 5.75H6.75"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M12.75 10.75H14.1964C15.4308 10.75 15.6499 12.6376 14.5101 12.9556C14.4549 12.971 14.397 12.9772 14.3398 12.9792L13.75 13L14.3398 13.0208C14.397 13.0228 14.4549 13.0289 14.5101 13.0444C15.6499 13.3624 15.4308 15.25 14.1964 15.25H12.75"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function IconPause({
   color = "currentColor",
   height = 24,
@@ -1490,6 +1579,38 @@ export function IconRedo({
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconRotate({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.1265 13.1265C10.2952 15.9578 5.70478 15.9578 2.87348 13.1265C0.0421724 10.2952 0.0421724 5.7048 2.87348 2.8735C5.70478 0.0422018 10.2952 0.0422018 13.1265 2.8735C13.7603 3.5073 14.2522 4.2292 14.6023 4.9999"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M15.25 0.75V4.25C15.25 4.8023 14.8023 5.25 14.25 5.25H10.75"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </svg>
   );

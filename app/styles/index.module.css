@@ -1,202 +1,71 @@
-div.container {
-  min-height: 100vh;
-  /* margin: 0 auto; */
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* text-align: center; */
-  /* gap: 16px; */
-  /* text-wrap: balance; */
-  /* border: 1px solid red; */
+main.page {
+  padding: var(--spacing-extra-large)
+    clamp(
+      var(--spacing-large),
+      var(--spacing-extra-large),
+      var(--spacing-extra-extra-large)
+    )
+    0;
+  color: var(--gray-8);
 }
 
-section.heroScene {
-  position: relative;
-}
-
-div.heroContainer {
-  position: sticky;
-  top: 0;
-  margin: 0 auto;
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-div.heroNav {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 4;
-}
-
-div.heroTextContainer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 30vh;
-  padding: var(--spacing-extra-extra-large) 0 0 0;
+div.hero {
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  /* border: 1px solid red; */
-  z-index: 3;
-  pointer-events: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-large);
+  min-height: 80vh;
+  /* width: 100%; */
 }
 
-h1.heroText {
-  font-size: var(--f0) !important;
-  font-weight: 900 !important;
+div.hero > div:first-of-type {
+  text-align: center;
 }
 
-/* div.heroBackground {
+div.illustration {
+  position: relative;
+  border-radius: 2px;
+  padding: clamp(
+    var(--spacing-medium),
+    var(--spacing-large),
+    var(--spacing-extra-large)
+  );
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Background layer */
+div.illustration::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(
-      120% 90% at 50% 40%,
-      rgba(38, 41, 46, 0.5) 0%,
-      rgba(14, 16, 20, 0.88) 62%,
-      rgba(6, 7, 9, 1) 100%
-    ),
-    linear-gradient(180deg, #0b0d11 0%, #060709 100%);
+
+  background-image: url(../assets/images/loginBackgroundFlare.png);
+  background-size: cover;
+  background-position: center;
+
+  /* Black & white */
+  filter: hue-rotate(360deg);
+
+  animation: hueSwing 45s ease-in-out infinite;
+
   z-index: 0;
-} */
-
-div.heroLaptop {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  --screen-perspective: 1400px;
-  --screen-rotate-x: 8deg;
-  --screen-rotate-y: 0deg;
-  /* --screen-rotate-z: -0.35deg; */
-  --screen-rotate-z: 0deg;
-  /* --screen-skew-x: -0.8deg; */
-  --screen-skew-x: 0deg;
-  --screen-scale-x: 0.985;
-  --screen-scale-y: 1;
 }
 
-img.heroLaptopImage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Ensure content sits above */
+div.illustration > * {
+  position: relative;
   z-index: 1;
 }
 
-div.heroScreen {
-  position: absolute;
-  left: 22.85%;
-  top: 28.6%;
-  width: 54.1%;
-  height: 41.3%;
-  /* border-radius: clamp(10px, 1.2vw, 16px); */
-  overflow: hidden;
-  background: #000000;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  z-index: 2;
-  transform-origin: center center;
-  transform: perspective(var(--screen-perspective))
-    rotateX(var(--screen-rotate-x)) rotateY(var(--screen-rotate-y))
-    rotateZ(var(--screen-rotate-z)) skewX(var(--screen-skew-x))
-    scaleX(var(--screen-scale-x)) scaleY(var(--screen-scale-y));
-}
-
-div.heroScreenInner {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  background: #000000;
-}
-
-div.previewApp {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  color: var(--gray-10);
-  /* background: #0b0b0b; */
-  --f0: 2.6rem;
-  --f1: 1.6rem;
-  --f2: 1.1rem;
-  --f3: 0.95rem;
-  --f4: 0.85rem;
-  --f5: 0.75rem;
-  --f6: 0.65rem;
-  --spacing-extra-small: 0.2rem;
-  --spacing-small: 0.35rem;
-  --spacing-medium: 0.55rem;
-  --spacing-large: 0.9rem;
-  --spacing-extra-large: 1.4rem;
-  --spacing-extra-extra-large: 2rem;
-}
-
-main.previewMain {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  background: #000000;
-}
-
-section.previewCalendar {
-  min-height: 0;
-  display: flex;
-  border-top: 1px solid var(--gray-4);
-  border-right: 1px solid var(--gray-4);
-  border-left: 1px solid var(--gray-4);
-}
-
-section.previewEditors {
-  min-height: 0;
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  border-top: 1px solid var(--gray-4);
-  border-right: 1px solid var(--gray-4);
-}
-
-div.previewPanel {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  min-height: 0;
-  border-bottom: 1px solid var(--gray-4);
-}
-
-div.previewPanel:last-child {
-  border-bottom: none;
-}
-
-div.previewPanelHeader {
-  padding: var(--spacing-small) var(--spacing-medium);
-  border-bottom: 1px solid var(--gray-4);
-  background: rgba(10, 10, 10, 0.9);
-}
-
-div.previewPanelBody {
-  min-height: 0;
-  display: flex;
-}
-
-img.logo {
-  display: block;
-  max-width: 80%;
-  height: auto;
-  margin: 0 auto;
-}
-
-span.highlight {
-  color: #63a501;
+@keyframes hueSwing {
+  0% {
+    filter: grayscale(95%) hue-rotate(360deg);
+  }
+  50% {
+    filter: grayscale(85%) hue-rotate(90deg);
+  }
+  100% {
+    filter: grayscale(95%) hue-rotate(360deg);
+  }
 }

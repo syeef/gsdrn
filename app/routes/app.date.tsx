@@ -5,14 +5,12 @@ import {
   redirect,
 } from "react-router";
 import { getAuth } from "~/lib/auth.server";
-import AppPage, {
-  type AppUserData,
-} from "~/components/pages/AppPage/AppPage";
+import AppPage, { type AppUserData } from "~/components/pages/AppPage/AppPage";
 import { isValidDateKey } from "~/utils/date";
 
 export const meta: MetaFunction = () => [
-  { title: "GSDRN" },
-  { name: "description", content: "Get Shit Done Right Now" },
+  { title: "Tickatana" },
+  { name: "description", content: "Where Tasks Get Done" },
 ];
 
 type LoaderData = AppUserData & { dateKey: string };

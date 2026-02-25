@@ -1,6 +1,6 @@
 h1.title {
   color: var(--gray-10);
-  font-size: var(--f1);
+  font-size: var(--f15);
   margin-block-start: 0;
   margin-block-end: 0;
 }
@@ -17,6 +17,13 @@ h3.title {
   font-size: var(--f3);
   margin-block-start: 0;
   margin-block-end: 0;
+}
+
+h1.Hedvig,
+h2.Hedvig,
+h3.Hedvig {
+  font-family: "Hedvig Letters Serif";
+  font-weight: 400;
 }
 
 h1.Lora,
