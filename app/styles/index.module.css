@@ -109,6 +109,12 @@ section.featureCallout {
 .col2row3 {
   grid-area: 3 / 2 / 4 / 3;
 }
+.col1row4 {
+  grid-area: 4 / 1 / 5 / 2;
+}
+.col2row4 {
+  grid-area: 4 / 2 / 5 / 3;
+}
 
 .centerFlow {
   display: flex;
@@ -172,6 +178,6 @@ section.pricing {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
   margin: var(--spacing-large) 0;
 }

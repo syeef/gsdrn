@@ -327,6 +327,31 @@ export function IconCalendar({
   );
 }
 
+export function IconCalendarTimer({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.25 5.25V4.75C15.25 4.21957 15.0393 3.71086 14.6642 3.33579C14.2891 2.96071 13.7804 2.75 13.25 2.75H2.75C2.21957 2.75 1.71086 2.96071 1.33579 3.33579C0.960714 3.71086 0.75 4.21957 0.75 4.75V13.25C0.75 13.7804 0.960714 14.2891 1.33579 14.6642C1.71086 15.0393 2.21957 15.25 2.75 15.25H5.25M11 9.75V11L12.25 12.25M4 0.75V4.25M12 0.75V4.25M11 15.25C9.87283 15.25 8.79183 14.8022 7.9948 14.0052C7.19777 13.2082 6.75 12.1272 6.75 11C6.75 9.87283 7.19777 8.79183 7.9948 7.9948C8.79183 7.19777 9.87283 6.75 11 6.75C12.1272 6.75 13.2082 7.19777 14.0052 7.9948C14.8022 8.79183 15.25 9.87283 15.25 11C15.25 12.1272 14.8022 13.2082 14.0052 14.0052C13.2082 14.8022 12.1272 15.25 11 15.25Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function IconChevronRight({
   color = "currentColor",
   height = 24,
@@ -1321,6 +1346,38 @@ export function IconPlay({
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconPlus({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8 1.75V14.25"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M14.25 8H1.75"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </svg>
   );

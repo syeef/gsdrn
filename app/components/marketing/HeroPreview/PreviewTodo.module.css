@@ -1,0 +1,76 @@
+.editorBody {
+  min-height: 0;
+  overflow: auto;
+  /* padding: 0.55rem 0.62rem; */
+  padding: var(--spacing-medium);
+}
+
+.todoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.32rem;
+}
+
+.todoListPanel {
+  min-height: 0;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  overflow: auto;
+  align-content: start;
+}
+
+.todoItemRow {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.todoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45em;
+  font-size: var(--f5);
+  line-height: 1.35;
+}
+
+.todoCheckbox {
+  width: 0.95em;
+  height: 0.95em;
+  margin-top: 0.15em;
+  border-radius: 0.18em;
+  border: 1px solid var(--gray-9);
+  background: transparent;
+  flex: 0 0 auto;
+}
+
+.todoCheckboxChecked {
+  border-color: var(--blue-7);
+  background: color-mix(in srgb, var(--blue-6) 55%, transparent);
+}
+
+.todoText {
+  font-size: var(--f5);
+  line-height: inherit;
+  color: var(--gray-9);
+}
+
+.todoTextDone {
+  text-decoration: line-through;
+  color: var(--gray-8);
+}
+
+.todoChildren {
+  list-style: none;
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.18rem;
+}
+
+.todoChild {
+  font-size: var(--f5);
+  line-height: 1.35;
+  color: var(--gray-8);
+}

@@ -1,97 +1,18 @@
-div.previewViewport {
-  height: var(--preview-viewport-height, 100%);
-  width: 100%;
-  display: grid;
-  color: #f2f2f2;
-  background: #000000;
-}
-
-section.previewShell {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  border: 1px solid var(--gray-4);
-  /* background: radial-gradient(circle at 0% 0%, #101010 0%, #060606 45%, #020202 100%); */
-  background: #000000;
-  overflow: hidden;
-}
-
-header.previewShellHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  padding: 0.52rem 0.72rem;
-  border-bottom: 1px solid var(--gray-4);
-  /* background: rgba(8, 8, 8, 0.93); */
-  background: #000000;
-}
-
-h3.previewShellTitle {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--gray-10);
-}
-
-span.previewShellTitleStack {
-  display: inline-grid;
-  align-items: center;
-  min-height: 1em;
-}
-
-span.previewShellTitleText {
-  grid-area: 1 / 1;
-  display: inline-block;
-  will-change: opacity;
-}
-
-span.previewShellBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--gray-6) 56%, transparent);
-  padding: 0.14rem 0.45rem;
-  font-size: 0.58rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gray-7);
-}
-
-div.previewShellBody {
-  min-height: 0;
-  /* padding: 0.66rem; */
-  display: grid;
-}
-
-div.previewShellBodyScene {
-  grid-area: 1 / 1;
-  min-height: 0;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  padding: var(--spacing-small);
-}
-
-div.previewOverviewLayout {
+.overviewLayout {
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  /* gap: 0.6rem; */
 }
 
-article.previewCalendarPanel {
+.calendarPanel {
   min-height: 0;
   display: flex;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
-  background: rgba(0, 0, 0, 0.66);
+  background: rgb(0 0 0 / 66%);
 }
 
-div.previewCalendarTimeline {
+.calendarTimeline {
   --preview-calendar-accent: var(--orange-9);
   --preview-calendar-grid: var(--gray-4);
   --preview-hour-height: 34px;
@@ -102,7 +23,7 @@ div.previewCalendarTimeline {
   overflow: hidden;
 }
 
-div.previewCalendarTimelineScroll {
+.calendarTimelineScroll {
   display: grid;
   grid-template-columns: 2.25rem 1fr;
   gap: 0.35rem;
@@ -115,17 +36,17 @@ div.previewCalendarTimelineScroll {
   scrollbar-width: none;
 }
 
-div.previewCalendarTimelineScroll::-webkit-scrollbar {
+.calendarTimelineScroll::-webkit-scrollbar {
   display: none;
 }
 
-div.previewCalendarHourLabels {
+.calendarHourLabels {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-div.previewCalendarHourLabel {
+.calendarHourLabel {
   height: var(--preview-hour-height);
   padding-top: 1px;
   font-size: 0.48rem;
@@ -135,22 +56,22 @@ div.previewCalendarHourLabel {
   white-space: nowrap;
 }
 
-div.previewCalendarGrid {
+.calendarGrid {
   position: relative;
   border-left: 1px solid var(--preview-calendar-accent);
   overflow: visible;
 }
 
-div.previewCalendarHourRow {
+.calendarHourRow {
   height: var(--preview-hour-height);
   border-bottom: 1px dashed var(--preview-calendar-grid);
 }
 
-div.previewCalendarHourRow:last-child {
+.calendarHourRow:last-child {
   border-bottom: none;
 }
 
-div.previewCalendarEventsLayer {
+.calendarEventsLayer {
   position: absolute;
   inset: 0;
   padding: 3px 6px 3px 2px;
@@ -158,7 +79,7 @@ div.previewCalendarEventsLayer {
   z-index: 2;
 }
 
-div.previewCalendarEventCard {
+.calendarEventCard {
   position: absolute;
   left: 0;
   right: 0;
@@ -171,15 +92,14 @@ div.previewCalendarEventCard {
   gap: 0.12rem;
 }
 
-div.previewCalendarEventHeader {
+.calendarEventHeader {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 0.25rem;
 }
 
-span.previewCalendarEventTitle {
-  /* font-size: 0.52rem; */
+.calendarEventTitle {
   font-size: var(--f5);
   color: var(--gray-10);
   line-height: 1.25;
@@ -189,7 +109,7 @@ span.previewCalendarEventTitle {
   text-overflow: ellipsis;
 }
 
-span.previewCalendarEventTime {
+.calendarEventTime {
   font-size: var(--f6);
   color: var(--gray-9);
   line-height: 1.2;
@@ -197,7 +117,7 @@ span.previewCalendarEventTime {
   letter-spacing: 0.03em;
 }
 
-div.previewCalendarNowLine {
+.calendarNowLine {
   position: absolute;
   left: 0;
   right: 0;
@@ -208,7 +128,7 @@ div.previewCalendarNowLine {
   z-index: 3;
 }
 
-span.previewCalendarNowDot {
+.calendarNowDot {
   position: absolute;
   left: -3px;
   top: -2px;
@@ -220,36 +140,28 @@ span.previewCalendarNowDot {
     color-mix(in srgb, var(--preview-calendar-accent) 70%, transparent);
 }
 
-div.previewEditorsStack {
+.editorsStack {
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-  /* gap: 0.6rem; */
 }
 
-section.previewEditorSection {
+.editorSection {
   min-height: 0;
   display: grid;
   grid-template-rows: max-content 1fr;
-  /* border: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent); */
   border: 1px solid var(--gray-4);
-  background: rgba(0, 0, 0, 1);
+  background: #000;
 }
 
-div.previewEditorTitle {
+.editorTitle {
   height: 1.95rem;
   display: flex;
   align-items: center;
   padding: 0 0.62rem;
   border-bottom: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
-  /* font-size: 0.62rem; */
   font-size: var(--f5);
   font-family: "Hedvig Letters Serif";
-  /* font-style: italic; */
-  /* letter-spacing: 0.08em; */
-  /* text-transform: uppercase; */
-  /* color: var(--gray-7); */
-
   background: linear-gradient(90deg, var(--gray-10) 8%, var(--gray-9) 80%);
   background-clip: text;
   -webkit-background-clip: text;
@@ -257,14 +169,14 @@ div.previewEditorTitle {
   -webkit-text-fill-color: transparent;
 }
 
-div.previewEditorBody {
+.editorBody {
   min-height: 0;
   overflow: auto;
   padding: 0.55rem 0.62rem;
 }
 
-ul.previewTodoList,
-ul.previewNotesList {
+.todoList,
+.notesList {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -272,21 +184,7 @@ ul.previewNotesList {
   gap: 0.32rem;
 }
 
-ul.previewTodoListPanel {
-  min-height: 0;
-  height: 100%;
-  box-sizing: border-box;
-  padding: 0;
-  overflow: auto;
-  align-content: start;
-}
-
-li.previewTodoItemRow {
-  display: grid;
-  gap: 0.3rem;
-}
-
-.previewTodoItem {
+.todoItem {
   display: flex;
   align-items: flex-start;
   gap: 0.45em;
@@ -294,7 +192,7 @@ li.previewTodoItemRow {
   line-height: 1.35;
 }
 
-span.previewTodoCheckbox {
+.todoCheckbox {
   width: 0.95em;
   height: 0.95em;
   margin-top: 0.15em;
@@ -304,37 +202,23 @@ span.previewTodoCheckbox {
   flex: 0 0 auto;
 }
 
-span.previewTodoCheckboxChecked {
+.todoCheckboxChecked {
   border-color: var(--blue-7);
   background: color-mix(in srgb, var(--blue-6) 55%, transparent);
 }
 
-span.previewTodoText {
+.todoText {
   font-size: var(--f5);
   line-height: inherit;
   color: var(--gray-9);
 }
 
-span.previewTodoTextDone {
+.todoTextDone {
   text-decoration: line-through;
   color: var(--gray-8);
 }
 
-ul.previewTodoChildren {
-  list-style: none;
-  margin: 0;
-  padding-left: 1.2rem;
-  display: grid;
-  gap: 0.18rem;
-}
-
-li.previewTodoChild {
-  font-size: var(--f5);
-  line-height: 1.35;
-  color: var(--gray-8);
-}
-
-li.previewNotesItem {
+.notesItem {
   position: relative;
   padding-left: 0.72rem;
   font-size: var(--f5);
@@ -342,7 +226,7 @@ li.previewNotesItem {
   color: var(--gray-9);
 }
 
-li.previewNotesItem::before {
+.notesItem::before {
   content: "";
   position: absolute;
   left: 0;
@@ -354,7 +238,7 @@ li.previewNotesItem::before {
 }
 
 @media (max-width: 760px) {
-  div.previewOverviewLayout {
+  .overviewLayout {
     grid-template-columns: 1fr;
   }
 }

@@ -92,7 +92,11 @@ export default function Waveform() {
         const grain = 0.9 + 0.1 * Math.sin(x * 0.22 + time * 4.5);
         const amp = Math.max(
           1,
-          (0.06 + Math.abs(phrase) * 0.94) * baseAmplitude * edgeFade * pulse * grain,
+          (0.06 + Math.abs(phrase) * 0.94) *
+            baseAmplitude *
+            edgeFade *
+            pulse *
+            grain,
         );
         const y1 = midY - amp;
         const y2 = midY + amp;
@@ -212,9 +216,7 @@ export default function Waveform() {
         <canvas ref={reflectionCanvasRef} className={styles.waveformCanvas} />
       </div>
       <div className={styles.waveformOverlay}>
-        <div className={styles.waveformPlaceholder}>
-          placeholder (image/component)
-        </div>
+        <div className={styles.waveformPlaceholder}>Placeholder</div>
       </div>
     </div>
   );

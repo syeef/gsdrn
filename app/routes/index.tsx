@@ -5,19 +5,26 @@ import Title from "~/components/ui/Title/Title";
 import { FeaturedContentParallax } from "~/components/ui/FeaturedContentParallax/FeaturedContentParallax";
 
 import styles from "../styles/index.module.css";
-import HeroPreview from "~/components/marketing/HeroPreview/HeroPreview";
+import MainAppPreview from "~/components/marketing/HeroPreview/MainAppPreview";
+import PreviewNotes from "~/components/marketing/HeroPreview/PreviewNotes";
+import PreviewTodo from "~/components/marketing/HeroPreview/PreviewTodo";
 import Waveform from "~/components/marketing/Waveform/Waveform";
 import {
   IconAiText,
+  IconCalendarTimer,
   IconChevronRight,
   IconCursorList,
   IconEyeOff,
   IconHeadphones,
   IconMail,
   IconOrderedList,
+  IconPlus,
   IconRotate,
   IconTag,
 } from "~/components/ui/Icons/Icons";
+import { getAuth } from "~/lib/auth.server";
+import { redirect, type LoaderFunctionArgs } from "react-router";
+import Badge from "~/components/ui/Badge/Badge";
 
 type HeadingColor = "default" | "orange" | "blue" | "purple" | "green" | "gray";
 
@@ -42,9 +49,7 @@ const FEATURED: FeaturedItem[] = [
   {
     id: "todos",
     title: "Structure for your day",
-    svgImage: (
-      <HeroPreview scene={"todos"} transition={undefined} height={440} />
-    ),
+    svgImage: <PreviewTodo transition={undefined} height={440} />,
     features: [
       {
         icon: <IconOrderedList />,
@@ -68,9 +73,7 @@ const FEATURED: FeaturedItem[] = [
     id: "notes",
     title: "Thoughts captured, instantly",
 
-    svgImage: (
-      <HeroPreview scene={"notes"} transition={undefined} height={440} />
-    ),
+    svgImage: <PreviewNotes transition={undefined} height={440} />,
     features: [
       {
         icon: <IconOrderedList />,
@@ -92,6 +95,20 @@ const FEATURED: FeaturedItem[] = [
   },
 ];
 
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const url = new URL(request.url);
+  if (url.pathname !== "/") return null;
+
+  const auth = getAuth(context);
+  const session = await auth.api.getSession({ headers: request.headers });
+
+  if (session) {
+    throw redirect("/app");
+  }
+
+  return null;
+}
+
 export default function index() {
   const dateKey = React.useMemo(() => formatDateKey(new Date()), []);
 
@@ -108,11 +125,7 @@ export default function index() {
           </div>
 
           <div className={styles.illustration}>
-            <HeroPreview
-              dateKey={dateKey}
-              scene={"overview"}
-              transition={undefined}
-            />
+            <MainAppPreview dateKey={dateKey} transition={undefined} />
           </div>
         </div>
 
@@ -120,6 +133,7 @@ export default function index() {
 
         <section className={styles.featureCallout}>
           <div className={`${styles.col1row1} ${styles.centerFlow}`}>
+            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
             <div>
               <Title as="h1" headingColor="gray">
                 Your day, distilled
@@ -144,8 +158,9 @@ export default function index() {
           <div className={styles.col2row1}>
             <Waveform />
           </div>
-          <div className={styles.col1row2}>image goes here</div>
+          <div className={styles.col1row2}>Placeholder</div>
           <div className={`${styles.col2row2} ${styles.centerFlow}`}>
+            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
             <div>
               <Title as="h1" headingColor="gray">
                 A week, reflected
@@ -168,6 +183,7 @@ export default function index() {
             </div>
           </div>
           <div className={`${styles.col1row3} ${styles.centerFlow}`}>
+            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
             <div>
               <Title as="h1" headingColor="gray">
                 Summaries, summoned
@@ -188,7 +204,30 @@ export default function index() {
               </div>
             </div>
           </div>
-          <div className={styles.col2row3}>image goes here</div>
+          <div className={styles.col2row3}>Placeholder</div>
+          <div className={styles.col1row4}>Placeholder</div>
+          <div className={`${styles.col2row4} ${styles.centerFlow}`}>
+            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+            <div>
+              <Title as="h1" headingColor="gray">
+                Prioritises, scheduled
+              </Title>
+              <p>Your tasks, intelligently placed into your day.</p>
+            </div>
+
+            <div className={styles.featureBox}>
+              <div className={styles.featureIcon}>
+                <IconCalendarTimer />
+              </div>
+
+              <div className={styles.featuredContent}>
+                <span className={styles.featureHeading}>Scheduled for you</span>
+                <span className={styles.featureBody}>
+                  Placed at the right time, automatically.
+                </span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className={styles.pricing}>

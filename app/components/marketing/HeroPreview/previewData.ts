@@ -5,6 +5,15 @@ export type PreviewTodoItem = {
   children?: readonly string[];
 };
 
+export type PreviewCalendarEventSeed = {
+  id: string;
+  title: string;
+  startHour: number;
+  startMinute: number;
+  endHour: number;
+  endMinute: number;
+};
+
 export const TODO_ITEMS: readonly PreviewTodoItem[] = [
   {
     id: "t1",
@@ -21,4 +30,37 @@ export const NOTE_ITEMS = [
   "Call Layla to discuss onboarding copy",
   "Draft launch tweet variations",
   "Pull screenshots for homepage",
+] as const;
+
+export const PREVIEW_DYNAMIC_EVENT = {
+  id: "setup-tickatana",
+  title: "Setup Tickatana",
+  durationMinutes: 20,
+} as const;
+
+export const PREVIEW_CALENDAR_EVENTS: readonly PreviewCalendarEventSeed[] = [
+  {
+    id: "gym",
+    title: "Gym",
+    startHour: 6,
+    startMinute: 30,
+    endHour: 8,
+    endMinute: 0,
+  },
+  {
+    id: "focus-time",
+    title: "Focus Time",
+    startHour: 10,
+    startMinute: 0,
+    endHour: 12,
+    endMinute: 0,
+  },
+  {
+    id: "design-review",
+    title: "Design Review",
+    startHour: 14,
+    startMinute: 0,
+    endHour: 15,
+    endMinute: 0,
+  },
 ] as const;
