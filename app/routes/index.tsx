@@ -6,12 +6,17 @@ import { FeaturedContentParallax } from "~/components/ui/FeaturedContentParallax
 
 import styles from "../styles/index.module.css";
 import HeroPreview from "~/components/marketing/HeroPreview/HeroPreview";
+import Waveform from "~/components/marketing/Waveform/Waveform";
 import {
+  IconAiText,
   IconChevronRight,
   IconCursorList,
   IconEyeOff,
+  IconHeadphones,
+  IconMail,
   IconOrderedList,
   IconRotate,
+  IconTag,
 } from "~/components/ui/Icons/Icons";
 
 type HeadingColor = "default" | "orange" | "blue" | "purple" | "green" | "gray";
@@ -68,14 +73,19 @@ const FEATURED: FeaturedItem[] = [
     ),
     features: [
       {
+        icon: <IconOrderedList />,
+        heading: "Nest Notes",
+        body: "Structured thinking",
+      },
+      {
         icon: <IconEyeOff />,
         heading: "Private",
         body: "Confidential by default",
       },
       {
-        icon: <IconOrderedList />,
-        heading: "Nest Notes",
-        body: "Structured thinking",
+        icon: <IconTag />,
+        heading: "Labels",
+        body: "Organised with intent",
       },
     ],
     headingColor: "gray",
@@ -92,7 +102,7 @@ export default function index() {
         <div className={styles.hero}>
           <div>
             <Title variant="Hedvig" as="h1" headingColor="gray">
-              Less chaos. More progress.
+              Less chaos, more progress
             </Title>
             <p>An elegant view of your schedule, tasks, and notes.</p>
           </div>
@@ -106,7 +116,87 @@ export default function index() {
           </div>
         </div>
 
-        <FeaturedContentParallax items={FEATURED} stepHeight="30vh" />
+        <FeaturedContentParallax items={FEATURED} stepHeight="20vh" />
+
+        <section className={styles.featureCallout}>
+          <div className={`${styles.col1row1} ${styles.centerFlow}`}>
+            <div>
+              <Title as="h1" headingColor="gray">
+                Your day, distilled
+              </Title>
+              <p>A spoken brief of what matters most.</p>
+            </div>
+
+            <div className={styles.featureBox}>
+              <div className={styles.featureIcon}>
+                <IconHeadphones />
+              </div>
+
+              <div className={styles.featuredContent}>
+                <span className={styles.featureHeading}>Stay up to date</span>
+                <span className={styles.featureBody}>
+                  Hear about your upcoming events and tasks, directly within
+                  Tiketana or your favourite Podcast app.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.col2row1}>
+            <Waveform />
+          </div>
+          <div className={styles.col1row2}>image goes here</div>
+          <div className={`${styles.col2row2} ${styles.centerFlow}`}>
+            <div>
+              <Title as="h1" headingColor="gray">
+                A week, reflected
+              </Title>
+              <p>Insight into your progress, delivered.</p>
+            </div>
+
+            <div className={styles.featureBox}>
+              <div className={styles.featureIcon}>
+                <IconMail />
+              </div>
+
+              <div className={styles.featuredContent}>
+                <span className={styles.featureHeading}>A measured close</span>
+                <span className={styles.featureBody}>
+                  Every Friday, receive personalised insights about your tasks
+                  and progress, straight to your inbox.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className={`${styles.col1row3} ${styles.centerFlow}`}>
+            <div>
+              <Title as="h1" headingColor="gray">
+                Summaries, summoned
+              </Title>
+              <p>Your work, synthesised into a clear, shareable overview.</p>
+            </div>
+
+            <div className={styles.featureBox}>
+              <div className={styles.featureIcon}>
+                <IconAiText />
+              </div>
+
+              <div className={styles.featuredContent}>
+                <span className={styles.featureHeading}>Executive-ready</span>
+                <span className={styles.featureBody}>
+                  Surface the impact behind your completed work.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.col2row3}>image goes here</div>
+        </section>
+
+        <section className={styles.pricing}>
+          <Title as="h1" headingColor="blue">
+            Straightforward pricing
+          </Title>
+          <p>Experience the benefits of Plus for your first 60 days.</p>
+        </section>
       </main>
     </>
   );

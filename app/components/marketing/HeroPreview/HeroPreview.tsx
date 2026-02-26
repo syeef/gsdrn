@@ -67,12 +67,8 @@ const getStartOfDayForDateKey = (dateKey: string) => {
   return base;
 };
 
-const intervalsOverlap = (
-  aStart: Date,
-  aEnd: Date,
-  bStart: Date,
-  bEnd: Date,
-) => aStart < bEnd && aEnd > bStart;
+const intervalsOverlap = (aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) =>
+  aStart < bEnd && aEnd > bStart;
 
 function buildPreviewCalendarEvents(dateKey: string, now: Date) {
   const dayStart = getStartOfDayForDateKey(dateKey);
@@ -255,9 +251,15 @@ function PreviewCalendarContent({
   }, [nowOffset]);
 
   return (
-    <motion.article className={styles.previewCalendarPanel} transition={transition}>
+    <motion.article
+      className={styles.previewCalendarPanel}
+      transition={transition}
+    >
       <div className={styles.previewCalendarTimeline}>
-        <div className={styles.previewCalendarTimelineScroll} ref={timelineScrollRef}>
+        <div
+          className={styles.previewCalendarTimelineScroll}
+          ref={timelineScrollRef}
+        >
           <div
             className={styles.previewCalendarHourLabels}
             style={{ height: PREVIEW_CALENDAR_GRID_HEIGHT }}
@@ -441,9 +443,9 @@ function PreviewNotesContent({ transition }: PreviewSceneContentProps) {
       className={styles.previewEditorSection}
       transition={transition}
     >
-      <motion.div className={styles.previewEditorTitle} transition={transition}>
-        Notes
-      </motion.div>
+      {/* <motion.div className={styles.previewEditorTitle} transition={transition}>
+        Notes hello
+      </motion.div> */}
       <motion.div className={styles.previewEditorBody} transition={transition}>
         <ul className={styles.previewNotesList}>
           {NOTE_ITEMS.map((item) => (

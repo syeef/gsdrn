@@ -863,9 +863,9 @@ export function IconHeadphones({
       <path
         d="M14.866 10.25L15.213 8.063C15.64 4.148 12.29 0.75 8 0.75C3.71 0.75 0.359998 4.148 0.786998 8.063L1.134 10.25M4.442 15.054L3.916 15.182C2.754 15.466 1.559 14.837 1.248 13.779L0.824997 12.342C0.512997 11.284 1.203 10.196 2.365 9.912L2.892 9.784C3.472 9.642 4.07 9.956 4.226 10.485L5.213 13.839C5.368 14.368 5.022 14.912 4.442 15.054ZM11.558 15.054L12.084 15.182C13.246 15.466 14.441 14.837 14.752 13.779L15.175 12.342C15.487 11.284 14.797 10.196 13.635 9.912L13.108 9.784C12.528 9.642 11.93 9.956 11.774 10.485L10.787 13.839C10.632 14.368 10.978 14.912 11.558 15.054Z"
         stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </svg>
   );
@@ -1054,18 +1054,18 @@ export function IconMail({
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M0.75 3.75C0.75 2.64543 1.64543 1.75 2.75 1.75H13.25C14.3546 1.75 15.25 2.64543 15.25 3.75V12.25C15.25 13.3546 14.3546 14.25 13.25 14.25H2.75C1.64543 14.25 0.75 13.3546 0.75 12.25V3.75Z"
+        d="M0.75 4.75L8 0.75L15.25 4.75V13.25C15.25 14.3546 14.3546 15.25 13.25 15.25H2.75C1.64543 15.25 0.75 14.3546 0.75 13.25V4.75Z"
         stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
       <path
-        d="M1.5 2.5L8 8.25L14.5 2.5"
+        d="M15 5L9.25 9.25H6.75L1 5"
         stroke={color}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       />
     </svg>
   );
@@ -1880,6 +1880,35 @@ export function IconStorage({
         <path d="M.75 7.75h14.5v6.5a1 1 0 0 1-1 1H1.75a1 1 0 0 1-1-1z" />
         <path d="M.75 10V7.907a1 1 0 0 1 .048-.306l1.979-6.157A1 1 0 0 1 3.729.75h8.542a1 1 0 0 1 .952.694l1.979 6.157a1 1 0 0 1 .048.306V10m-11.5 1.25h1.5m3.5 0h3.5" />
       </g>
+    </svg>
+  );
+}
+
+export function IconTag({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11 6C11.5523 6 12 5.55228 12 5C12 4.44772 11.5523 4 11 4C10.4477 4 10 4.44772 10 5C10 5.55228 10.4477 6 11 6Z"
+        fill={color}
+      />
+      <path
+        d="M8.00001 0.75H15.25V8L8.55351 14.6708C7.75441 15.4668 6.45561 15.445 5.6837 14.6226L1.28994 9.941C0.540415 9.1424 0.572655 7.8895 1.36227 7.1305L8.00001 0.75Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
     </svg>
   );
 }

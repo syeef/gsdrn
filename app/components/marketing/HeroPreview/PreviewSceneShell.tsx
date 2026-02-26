@@ -1,6 +1,7 @@
 import * as React from "react";
 import { AnimatePresence, motion, type Transition } from "motion/react";
 import styles from "./HeroPreview.module.css";
+import Title from "~/components/ui/Title/Title";
 
 export type PreviewSceneProps = {
   transition: Transition;
@@ -24,7 +25,7 @@ export default function PreviewSceneShell({
   return (
     <section className={styles.previewShell}>
       <header className={styles.previewShellHeader}>
-        <h3 className={styles.previewShellTitle}>
+        <Title as="h3" className={styles.previewShellTitle}>
           <span className={styles.previewShellTitleStack}>
             <AnimatePresence mode="sync" initial={false}>
               <motion.span
@@ -39,7 +40,7 @@ export default function PreviewSceneShell({
               </motion.span>
             </AnimatePresence>
           </span>
-        </h3>
+        </Title>
         {/* {badge ? (
           <motion.span
             layout

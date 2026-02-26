@@ -18,9 +18,9 @@
   align-items: center;
 
   padding-top: clamp(
-    var(--spacing-medium),
-    var(--spacing-large),
-    var(--spacing-extra-large)
+    var(--spacing-extra-large),
+    var(--spacing-extra-extra-large),
+    var(--spacing-extra-extra-large)
   );
 
   padding-bottom: clamp(
@@ -152,16 +152,16 @@ a.featuredLearnMore:hover svg {
   color: var(--gray-8);
 }
 
-.featureHeading {
+span.featureHeading {
   margin: 0;
   color: var(--gray-10);
   font-size: var(--f4);
   line-height: 1.2;
 }
 
-.featureBody {
+span.featureBody {
   margin: 0;
-  color: var(--gray-8);
+  color: var(--gray-9);
   line-height: 1.45;
   font-size: var(--f5);
 }

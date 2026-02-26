@@ -179,7 +179,8 @@ div.previewCalendarEventHeader {
 }
 
 span.previewCalendarEventTitle {
-  font-size: 0.52rem;
+  /* font-size: 0.52rem; */
+  font-size: var(--f5);
   color: var(--gray-10);
   line-height: 1.25;
   letter-spacing: 0.04em;
@@ -189,7 +190,7 @@ span.previewCalendarEventTitle {
 }
 
 span.previewCalendarEventTime {
-  font-size: 0.46rem;
+  font-size: var(--f6);
   color: var(--gray-9);
   line-height: 1.2;
   white-space: nowrap;
@@ -230,8 +231,9 @@ section.previewEditorSection {
   min-height: 0;
   display: grid;
   grid-template-rows: max-content 1fr;
-  border: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
-  background: rgba(0, 0, 0, 0.66);
+  /* border: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent); */
+  border: 1px solid var(--gray-4);
+  background: rgba(0, 0, 0, 1);
 }
 
 div.previewEditorTitle {
@@ -308,7 +310,7 @@ span.previewTodoCheckboxChecked {
 }
 
 span.previewTodoText {
-  font-size: 1em;
+  font-size: var(--f5);
   line-height: inherit;
   color: var(--gray-9);
 }
@@ -335,7 +337,7 @@ li.previewTodoChild {
 li.previewNotesItem {
   position: relative;
   padding-left: 0.72rem;
-  font-size: 0.7rem;
+  font-size: var(--f5);
   line-height: 1.35;
   color: var(--gray-9);
 }
