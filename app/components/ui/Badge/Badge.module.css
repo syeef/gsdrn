@@ -19,9 +19,9 @@
 }
 
 .primary {
-  color: var(--blue-10);
-  background-color: var(--blue-1);
-  border: 1px solid var(--blue-4);
+  color: var(--orange-10);
+  background-color: var(--orange-1);
+  border: 1px solid var(--orange-4);
 }
 
 .secondary {

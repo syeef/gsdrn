@@ -25,6 +25,8 @@ import {
 import { getAuth } from "~/lib/auth.server";
 import { redirect, type LoaderFunctionArgs } from "react-router";
 import Badge from "~/components/ui/Badge/Badge";
+import { Hr } from "~/components/ui/Hr/Hr";
+import Footer from "~/components/ui/Footer/Footer";
 
 type HeadingColor = "default" | "orange" | "blue" | "purple" | "green" | "gray";
 
@@ -43,6 +45,14 @@ type FeaturedItem = {
   features?: FeaturedFeature[];
   svgImage?: React.ReactElement;
   headingColor?: HeadingColor;
+};
+
+type PricingPlan = {
+  name: string;
+  description: string;
+  price: string;
+  billingPeriod: string;
+  features: string[];
 };
 
 const FEATURED: FeaturedItem[] = [
@@ -95,6 +105,33 @@ const FEATURED: FeaturedItem[] = [
   },
 ];
 
+const FREE_PLAN: PricingPlan = {
+  name: "Free",
+  description: "Everything you need to organise your day.",
+  price: "$0",
+  billingPeriod: "/month",
+  features: [
+    "Automatic task rollover",
+    "Nested tasks",
+    "Nested notes",
+    "Labelling",
+  ],
+};
+
+const PLUS_PLAN: PricingPlan = {
+  name: "Plus",
+  description: "For deeper insight and intelligent automation.",
+  price: "$5",
+  billingPeriod: "/month",
+  features: [
+    "Everything in Free",
+    "Daily audio brief",
+    "Weekly summary email",
+    "On-demand summaries",
+    "Assisted scheduling",
+  ],
+};
+
 export async function loader({ request, context }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   if (url.pathname !== "/") return null;
@@ -114,129 +151,195 @@ export default function index() {
 
   return (
     <>
-      <NavBar />
-      <main className={styles.page}>
-        <div className={styles.hero}>
-          <div>
-            <Title variant="Hedvig" as="h1" headingColor="gray">
-              Less chaos, more progress
-            </Title>
-            <p>An elegant view of your schedule, tasks, and notes.</p>
-          </div>
-
-          <div className={styles.illustration}>
-            <MainAppPreview dateKey={dateKey} transition={undefined} />
-          </div>
-        </div>
-
-        <FeaturedContentParallax items={FEATURED} stepHeight="20vh" />
-
-        <section className={styles.featureCallout}>
-          <div className={`${styles.col1row1} ${styles.centerFlow}`}>
-            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+      <div
+        className={styles.pageContainer}
+        style={{ position: "relative", backgroundColor: "var(--background)" }}
+      >
+        <NavBar />
+        <main className={styles.page}>
+          <div className={styles.hero}>
             <div>
-              <Title as="h1" headingColor="gray">
-                Your day, distilled
+              <Title variant="Hedvig" as="h1" headingColor="gray">
+                Less chaos, more progress
               </Title>
-              <p>A spoken brief of what matters most.</p>
+              <p>An elegant view of your schedule, tasks, and notes.</p>
             </div>
 
-            <div className={styles.featureBox}>
-              <div className={styles.featureIcon}>
-                <IconHeadphones />
-              </div>
-
-              <div className={styles.featuredContent}>
-                <span className={styles.featureHeading}>Stay up to date</span>
-                <span className={styles.featureBody}>
-                  Hear about your upcoming events and tasks, directly within
-                  Tiketana or your favourite Podcast app.
-                </span>
-              </div>
+            <div className={styles.illustration}>
+              <MainAppPreview dateKey={dateKey} transition={undefined} />
             </div>
           </div>
-          <div className={styles.col2row1}>
-            <Waveform />
-          </div>
-          <div className={styles.col1row2}>Placeholder</div>
-          <div className={`${styles.col2row2} ${styles.centerFlow}`}>
-            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
-            <div>
+
+          <FeaturedContentParallax items={FEATURED} stepHeight="20vh" />
+
+          <section className={styles.featureCallout}>
+            <div className={`${styles.col1row1} ${styles.centerFlow}`}>
+              <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+              <div>
+                <Title as="h1" headingColor="gray">
+                  Your day, distilled
+                </Title>
+                <p>A spoken brief of what matters most.</p>
+              </div>
+
+              <div className={styles.featureBox}>
+                <div className={styles.featureIcon}>
+                  <IconHeadphones />
+                </div>
+
+                <div className={styles.featuredContent}>
+                  <span className={styles.featureHeading}>Stay up to date</span>
+                  <span className={styles.featureBody}>
+                    Hear about your upcoming events and tasks, directly within
+                    Tiketana or your favourite Podcast app.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.col2row1}>
+              <Waveform />
+            </div>
+            <div className={styles.col1row2}>Placeholder</div>
+            <div className={`${styles.col2row2} ${styles.centerFlow}`}>
+              <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+              <div>
+                <Title as="h1" headingColor="gray">
+                  A week, reflected
+                </Title>
+                <p>Insight into your progress, delivered.</p>
+              </div>
+
+              <div className={styles.featureBox}>
+                <div className={styles.featureIcon}>
+                  <IconMail />
+                </div>
+
+                <div className={styles.featuredContent}>
+                  <span className={styles.featureHeading}>
+                    A measured close
+                  </span>
+                  <span className={styles.featureBody}>
+                    Every Friday, receive personalised insights about your tasks
+                    and progress, straight to your inbox.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className={`${styles.col1row3} ${styles.centerFlow}`}>
+              <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+              <div>
+                <Title as="h1" headingColor="gray">
+                  Summaries, summoned
+                </Title>
+                <p>Your work, synthesised into a clear, shareable overview.</p>
+              </div>
+
+              <div className={styles.featureBox}>
+                <div className={styles.featureIcon}>
+                  <IconAiText />
+                </div>
+
+                <div className={styles.featuredContent}>
+                  <span className={styles.featureHeading}>Executive-ready</span>
+                  <span className={styles.featureBody}>
+                    Surface the impact behind your completed work.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.col2row3}>Placeholder</div>
+            <div className={styles.col1row4}>Placeholder</div>
+            <div className={`${styles.col2row4} ${styles.centerFlow}`}>
+              <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
+              <div>
+                <Title as="h1" headingColor="gray">
+                  Prioritises, scheduled
+                </Title>
+                <p>Your tasks, intelligently placed into your day.</p>
+              </div>
+
+              <div className={styles.featureBox}>
+                <div className={styles.featureIcon}>
+                  <IconCalendarTimer />
+                </div>
+
+                <div className={styles.featuredContent}>
+                  <span className={styles.featureHeading}>
+                    Scheduled for you
+                  </span>
+                  <span className={styles.featureBody}>
+                    Placed at the right time, automatically.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className={styles.pricing}>
+            <div className={styles.centerFlex}>
               <Title as="h1" headingColor="gray">
-                A week, reflected
+                Straightforward pricing
               </Title>
-              <p>Insight into your progress, delivered.</p>
+              <p>Experience the benefits of Plus for your first 60 days.</p>
             </div>
-
-            <div className={styles.featureBox}>
-              <div className={styles.featureIcon}>
-                <IconMail />
+            <div className={styles.pricingCardContainer}>
+              {/* Free */}
+              <div className={styles.pricingCard}>
+                <div className={styles.pricingDetails}>
+                  <Title as="h3">{FREE_PLAN.name}</Title>
+                  <p>{FREE_PLAN.description}</p>
+                  <div className={styles.priceContainer}>
+                    <span className={styles.price}>{FREE_PLAN.price}</span>
+                    <span className={styles.billingPeriod}>
+                      {FREE_PLAN.billingPeriod}
+                    </span>
+                  </div>
+                  <Hr marginSize="small" />
+                </div>
+                <div className={styles.pricingFeatures}>
+                  <ul>
+                    {FREE_PLAN.features.map((feature) => (
+                      <li className={styles.featureListItem} key={feature}>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-
-              <div className={styles.featuredContent}>
-                <span className={styles.featureHeading}>A measured close</span>
-                <span className={styles.featureBody}>
-                  Every Friday, receive personalised insights about your tasks
-                  and progress, straight to your inbox.
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className={`${styles.col1row3} ${styles.centerFlow}`}>
-            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
-            <div>
-              <Title as="h1" headingColor="gray">
-                Summaries, summoned
-              </Title>
-              <p>Your work, synthesised into a clear, shareable overview.</p>
-            </div>
-
-            <div className={styles.featureBox}>
-              <div className={styles.featureIcon}>
-                <IconAiText />
-              </div>
-
-              <div className={styles.featuredContent}>
-                <span className={styles.featureHeading}>Executive-ready</span>
-                <span className={styles.featureBody}>
-                  Surface the impact behind your completed work.
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className={styles.col2row3}>Placeholder</div>
-          <div className={styles.col1row4}>Placeholder</div>
-          <div className={`${styles.col2row4} ${styles.centerFlow}`}>
-            <Badge icon={<IconPlus width={8} height={8} />} label="Plus" />
-            <div>
-              <Title as="h1" headingColor="gray">
-                Prioritises, scheduled
-              </Title>
-              <p>Your tasks, intelligently placed into your day.</p>
-            </div>
-
-            <div className={styles.featureBox}>
-              <div className={styles.featureIcon}>
-                <IconCalendarTimer />
-              </div>
-
-              <div className={styles.featuredContent}>
-                <span className={styles.featureHeading}>Scheduled for you</span>
-                <span className={styles.featureBody}>
-                  Placed at the right time, automatically.
-                </span>
+              {/* Plus */}
+              <div className={`${styles.pricingCard} ${styles.pricingCardAlt}`}>
+                <div className={styles.pricingDetails}>
+                  <Title headingColor="orange" as="h3">
+                    {PLUS_PLAN.name}
+                  </Title>
+                  <p>{PLUS_PLAN.description}</p>
+                  <div className={styles.priceContainer}>
+                    <span className={styles.price}>{PLUS_PLAN.price}</span>
+                    <span className={styles.billingPeriod}>
+                      {PLUS_PLAN.billingPeriod}
+                    </span>
+                  </div>
+                  <Hr marginSize="small" />
+                </div>
+                <div className={styles.pricingFeatures}>
+                  <ul>
+                    {PLUS_PLAN.features.map((feature) => (
+                      <li className={styles.featureListItem} key={feature}>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+            <p className={styles.microCopy}>
+              Prices shown in USD · Cancel anytime
+            </p>
+          </section>
+        </main>
+      </div>
 
-        <section className={styles.pricing}>
-          <Title as="h1" headingColor="blue">
-            Straightforward pricing
-          </Title>
-          <p>Experience the benefits of Plus for your first 60 days.</p>
-        </section>
-      </main>
+      <Footer />
     </>
   );
 }

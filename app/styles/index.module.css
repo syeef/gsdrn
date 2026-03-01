@@ -1,11 +1,14 @@
+.pageContainer {
+  z-index: 2;
+}
+
 main.page {
   padding: var(--spacing-extra-large)
     clamp(
       var(--spacing-large),
       var(--spacing-extra-large),
       var(--spacing-extra-extra-large)
-    )
-    0;
+    );
   color: var(--gray-8);
 }
 
@@ -77,9 +80,9 @@ section.featureCallout {
   grid-template-rows: repeat(3, 1fr);
   grid-column-gap: 0px;
   grid-row-gap: clamp(
-    var(--spacing-large),
     var(--spacing-extra-large),
-    var(--spacing-extra-extra-large)
+    var(--spacing-extra-extra-large),
+    var(--spacing-extra-extra-extra-large)
   );
   min-height: 70vh;
   margin: var(--spacing-large) 0;
@@ -179,5 +182,99 @@ section.pricing {
   justify-content: center;
   align-items: center;
   /* border: 1px solid blue; */
-  margin: var(--spacing-large) 0;
+  /* margin: var(--spacing-extra-large) 0; */
+
+  padding: clamp(
+      var(--spacing-large),
+      var(--spacing-extra-large),
+      var(--spacing-extra-extra-large)
+    )
+    0;
+
+  gap: clamp(
+    var(--spacing-medium),
+    var(--spacing-large),
+    var(--spacing-extra-large)
+  );
+}
+
+div.centerFlex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section.pricing > div.pricingCardContainer {
+  display: flex;
+  width: 100%;
+  max-width: 50vw;
+  justify-content: space-between;
+
+  gap: clamp(
+    var(--spacing-large),
+    var(--spacing-extra-large),
+    var(--spacing-extra-extra-large)
+  );
+  /* border: 1px solid red; */
+}
+
+div.pricingCardContainer div.pricingCard {
+  border: 1px solid;
+  border-color: var(--gray-4);
+  border-radius: 2px;
+  width: 50%;
+  min-height: 30vh;
+  padding: clamp(
+      var(--spacing-small),
+      var(--spacing-medium),
+      var(--spacing-large)
+    )
+    clamp(
+      var(--spacing-medium),
+      var(--spacing-large),
+      var(--spacing-extra-large)
+    );
+}
+
+div.pricingCardContainer div.pricingCardAlt {
+  border-color: var(--gray-9);
+}
+
+div.pricingDetails {
+  /* border-bottom: 1px solid var(--gray-4);
+  margin-bottom: var(--spacing-medium); */
+}
+
+div.priceContainer {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-small);
+  padding: clamp(
+      var(--spacing-small),
+      var(--spacing-medium),
+      var(--spacing-large)
+    )
+    0;
+}
+
+div.priceContainer > span.price {
+  font-size: var(--f2);
+  color: var(--gray-10);
+}
+
+div.pricingFeatures > ul li.featureListItem {
+  list-style-type: disc;
+  list-style-position: inside;
+  color: var(--gray-9);
+  padding: clamp(
+      var(--spacing-extra-small),
+      var(--spacing-extra-small),
+      var(--spacing-small)
+    )
+    0;
+}
+
+p.microCopy {
+  font-size: var(--f5);
 }

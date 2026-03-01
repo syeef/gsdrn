@@ -1,0 +1,54 @@
+footer.footer {
+  position: sticky;
+  bottom: 0;
+  height: fit-content;
+  z-index: 0;
+  /* background-color: rgba(23, 23, 23, 0.16); */
+  background-color: var(--gray-1);
+  padding-bottom: var(--spacing-extra-large);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+footer.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* noise overlay */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay; /* try: soft-light / overlay */
+  opacity: 0.56; /* overall strength */
+
+  border-radius: inherit; /* if your footer has rounding */
+}
+
+.footerTitle {
+  font-size: clamp(176px, 256px, 336px) !important;
+}
+
+div.footerLinks {
+  display: flex;
+  color: var(--gray-7);
+  /* justify-content: space-around; */
+}
+
+@media (max-width: 768px) {
+  div.footerLinks {
+    padding: var(--spacing-large) var(--spacing-small) var(--spacing-medium);
+    flex-direction: column;
+    gap: var(--spacing-large);
+  }
+}
+a.footerLink {
+  transition:
+    color 0.3s ease-in,
+    text-decoration 0.3s ease-in;
+}
+
+a.footerLink:hover {
+  color: var(--orange-4);
+}
