@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "DepartureMono-Regular";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PaperMono-Regular";
+  src: url("/fonts/PaperMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 h1.title {
   color: var(--gray-10);
   font-size: var(--f15);
@@ -22,8 +38,9 @@ h3.title {
 h1.Hedvig,
 h2.Hedvig,
 h3.Hedvig {
-  font-family: "Hedvig Letters Serif";
+  font-family: "Hedvig Letters Sans";
   font-weight: 400;
+  text-transform: uppercase;
 }
 
 h1.Lora,
@@ -36,8 +53,9 @@ h3.Lora {
 h1.Inter,
 h2.Inter,
 h3.Inter {
-  font-family: "Inter Tight";
-  font-weight: 500;
+  font-family: "Inter";
+  font-weight: 400;
+  text-transform: uppercase;
 }
 
 h1.GoogleSans,
@@ -45,6 +63,54 @@ h2.GoogleSans,
 h3.GoogleSans {
   font-family: "Google Sans";
   font-weight: 500;
+}
+/* 
+h1.DepartureMono,
+h2.DepartureMono,
+h3.DepartureMono {
+  font-family: "Departure Mono", monospace;
+  font-weight: 400;
+  letter-spacing: -1px;
+} */
+
+h1.DepartureMono,
+h2.DepartureMono,
+h3.DepartureMono {
+  font-family: "DepartureMono-Regular";
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+h1.WorkSans,
+h2.WorkSans,
+h3.WorkSans {
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+h1.CrimsonPro,
+h2.CrimsonPro,
+h3.CrimsonPro {
+  font-family: "Crimson Pro";
+  font-weight: 400;
+  font-style: normal;
+  /* letter-spacing: 0.03em; */
+  /* text-transform: uppercase; */
+}
+
+h1.PaperMono,
+h2.PaperMono,
+h3.PaperMono {
+  font-family: "PaperMono-Regular";
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  /* text-transform: uppercase; */
 }
 
 .headingOrange {

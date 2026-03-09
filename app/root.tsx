@@ -11,7 +11,10 @@ import { getAuth } from "~/lib/auth.server";
 
 import { eq } from "drizzle-orm";
 import { userExt } from "~/database/schema";
+import type { UserTier } from "~/database/schema";
 import { getDbFromContext } from "~/utils/db.service.server";
+import { resolveUserTier } from "~/utils/tier.server";
+import { TRIAL_DURATION_MS } from "~/utils/tier";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -36,6 +39,9 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const user = session?.user ?? null;
 
   let onboarding: { status: string; choice?: string | null } | null = null;
+  let tier: UserTier | null = null;
+  let trialEndsAt: string | null = null;
+
   if (user) {
     const ext = await db.query.userExt.findFirst({
       where: eq(userExt.userId, user.id),
@@ -43,9 +49,18 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     onboarding = ext
       ? { status: ext.onboardingStatus, choice: ext.onboardingChoice }
       : { status: "pending" };
+
+    const typedUser = user as { id: string; createdAt: Date };
+    const storedTier = (ext?.tier ?? "free") as UserTier;
+    tier = await resolveUserTier(typedUser, storedTier, db);
+    if (tier === "trial") {
+      trialEndsAt = new Date(
+        typedUser.createdAt.getTime() + TRIAL_DURATION_MS,
+      ).toISOString();
+    }
   }
 
-  return { user, onboarding };
+  return { user, onboarding, tier, trialEndsAt };
 }
 
 export const links: Route.LinksFunction = () => [
@@ -57,7 +72,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Hedvig+Letters+Serif:opsz@12..24&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
 

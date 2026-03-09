@@ -2,7 +2,7 @@ import * as React from "react";
 import styles from "~/styles/app.module.css";
 import Header from "~/components/ui/Header/Header";
 import Calendar from "~/components/ui/Calendar/Calendar";
-import Editor from "~/components/ui/Editor/Editor";
+import Editor, { type EditorMode } from "~/components/ui/Editor/Editor";
 import { Hr } from "~/components/ui/Hr/Hr";
 import Title from "~/components/ui/Title/Title";
 import DateNavigator from "~/components/ui/DateNavigator/DateNavigator";
@@ -23,6 +23,12 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
   const [saveSignal, setSaveSignal] = React.useState(0);
   const [activeSaves, setActiveSaves] = React.useState(0);
   const [isSavingVisible, setIsSavingVisible] = React.useState(false);
+  const [canonicalSyncErrors, setCanonicalSyncErrors] = React.useState<
+    Record<EditorMode, boolean>
+  >({
+    notes: false,
+    todos: false,
+  });
   const minVisibleUntilRef = React.useRef<number | null>(null);
   const hideTimeoutRef = React.useRef<number | null>(null);
 
@@ -36,7 +42,7 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
   const handleSaveStart = React.useCallback(() => {
     clearHideTimeout();
     const now = Date.now();
-    const minUntil = now + 3000;
+    const minUntil = now + 2000;
     minVisibleUntilRef.current = Math.max(
       minVisibleUntilRef.current ?? 0,
       minUntil,
@@ -87,9 +93,29 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [requestSaveAll]);
 
+  const handleCanonicalSaveError = React.useCallback((mode: EditorMode) => {
+    setCanonicalSyncErrors((current) =>
+      current[mode] ? current : { ...current, [mode]: true },
+    );
+  }, []);
+
+  const handleCanonicalSaveSuccess = React.useCallback((mode: EditorMode) => {
+    setCanonicalSyncErrors((current) =>
+      !current[mode] ? current : { ...current, [mode]: false },
+    );
+  }, []);
+
+  const hasCanonicalSyncError =
+    canonicalSyncErrors.notes || canonicalSyncErrors.todos;
+
   return (
     <div className={styles.page}>
-      <Header user={user} dateKey={dateKey} isSaving={isSavingVisible} />
+      <Header
+        user={user}
+        dateKey={dateKey}
+        isSaving={isSavingVisible}
+        syncIssue={hasCanonicalSyncError}
+      />
       <main className={styles.content}>
         <div className={styles.leading}>
           {/* <DateNavigator dateKey={dateKey} /> */}
@@ -108,8 +134,8 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
 
           <section className={styles.todoNotesContainer}>
             <div className={styles.titleContainer}>
-              <Title variant="Lora" as="h2">
-                <Title.Em headingColor="gray">Tasks</Title.Em>
+              <Title variant="PaperMono" as="h2" className={styles.appTitle}>
+                Tasks
               </Title>
             </div>
             <div className={styles.contentContainer}>
@@ -119,14 +145,16 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
                 saveSignal={saveSignal}
                 onSaveStart={handleSaveStart}
                 onSaveEnd={handleSaveEnd}
+                onCanonicalSaveError={handleCanonicalSaveError}
+                onCanonicalSaveSuccess={handleCanonicalSaveSuccess}
               />
             </div>
           </section>
 
           <section className={styles.todoNotesContainer}>
             <div className={styles.titleContainer}>
-              <Title variant="Lora" as="h2">
-                <Title.Em headingColor="gray">Notes</Title.Em>
+              <Title variant="PaperMono" as="h2" className={styles.appTitle}>
+                Notes
               </Title>
             </div>
             <div className={styles.contentContainer}>
@@ -136,6 +164,8 @@ export default function AppPage({ user, dateKey }: AppPageProps) {
                 saveSignal={saveSignal}
                 onSaveStart={handleSaveStart}
                 onSaveEnd={handleSaveEnd}
+                onCanonicalSaveError={handleCanonicalSaveError}
+                onCanonicalSaveSuccess={handleCanonicalSaveSuccess}
               />
             </div>
           </section>

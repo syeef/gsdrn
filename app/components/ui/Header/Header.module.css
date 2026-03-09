@@ -3,13 +3,14 @@ header {
   flex-direction: row;
   justify-content: space-between;
   padding: var(--spacing-medium);
-  border-top: 1px solid var(--gray-4);
-  border-right: 1px solid var(--gray-4);
+  /* border-top: 1px solid var(--gray-1); */
+  border-right: 1px solid var(--gray-1);
   border-bottom: 0;
-  border-left: 1px solid var(--gray-4);
+  border-left: 1px solid var(--gray-1);
   /* border: 1px solid red; */
   position: sticky;
   top: 0;
+  color: var(--gray-10);
 }
 
 div.horizontal {
@@ -44,16 +45,32 @@ div.horizontal {
   align-items: center;
 }
 
-@media (prefers-color-scheme: light) {
+.titleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.pageTitle {
+  margin: 0;
+}
+
+.syncIssue {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--red-8);
+  letter-spacing: 0.01em;
+}
+
+/* @media (prefers-color-scheme: light) {
   header {
     color: #000000;
     background-color: var(--gray-1);
   }
-}
+} */
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   header {
     color: var(--gray-10);
-    /* background-color: var(--gray-1); */
   }
-}
+} */

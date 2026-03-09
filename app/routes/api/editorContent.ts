@@ -3,6 +3,7 @@ import { and, eq, inArray, lt } from "drizzle-orm";
 import { getAuth } from "~/lib/auth.server";
 import { note, task, type Task } from "~/database/schema";
 import { getDbFromContext } from "~/utils/db.service.server";
+import { decryptAtRest, encryptAtRest } from "~/utils/encryption.server";
 import {
   buildNoteDoc,
   buildTaskDoc,
@@ -11,8 +12,19 @@ import {
   getLatestUpdatedAt,
 } from "~/utils/editorContent.server";
 import { formatDateKey, parseDateKey } from "~/utils/date";
+import {
+  handleTaskCompletedForScheduling,
+  reconcileOverdueScheduledTasksForUser,
+} from "~/server/taskScheduling.server";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+type DbChangeResult = { meta?: { changes?: number } };
+type RolloverStats = {
+  pastTaskCount: number;
+  candidateRootCount: number;
+  candidateTaskCount: number;
+  movedTaskCount: number;
+};
 
 const getDayDiff = (fromKey: string, toKey: string) => {
   const from = parseDateKey(fromKey);
@@ -50,12 +62,19 @@ const rolloverIncompleteTasks = async (
   userId: string,
   todayKey: string,
   now: Date,
-) => {
+): Promise<RolloverStats> => {
   const pastTasks = await db.query.task.findMany({
     where: and(eq(task.userId, userId), lt(task.taskDate, todayKey)),
   });
 
-  if (pastTasks.length === 0) return;
+  if (pastTasks.length === 0) {
+    return {
+      pastTaskCount: 0,
+      candidateRootCount: 0,
+      candidateTaskCount: 0,
+      movedTaskCount: 0,
+    };
+  }
 
   const tasksById = new Map(pastTasks.map((row) => [row.id, row]));
   const childrenByParent = buildChildrenMap(pastTasks);
@@ -66,7 +85,14 @@ const rolloverIncompleteTasks = async (
     rootIdsToMove.add(findRootId(row, tasksById));
   }
 
-  if (rootIdsToMove.size === 0) return;
+  if (rootIdsToMove.size === 0) {
+    return {
+      pastTaskCount: pastTasks.length,
+      candidateRootCount: 0,
+      candidateTaskCount: 0,
+      movedTaskCount: 0,
+    };
+  }
 
   const rootsToMove = Array.from(rootIdsToMove)
     .map((id) => tasksById.get(id))
@@ -117,6 +143,7 @@ const rolloverIncompleteTasks = async (
     }
   }
 
+  let movedTaskCount = 0;
   for (const row of tasksToMove) {
     const update: Partial<Task> = {
       taskDate: todayKey,
@@ -129,11 +156,23 @@ const rolloverIncompleteTasks = async (
       update.sortOrder = rootOrderMap.get(row.id) ?? row.sortOrder;
     }
 
-    await db
+    const result = (await db
       .update(task)
       .set(update)
-      .where(and(eq(task.id, row.id), eq(task.userId, userId)));
+      .where(
+        and(eq(task.id, row.id), eq(task.userId, userId), lt(task.taskDate, todayKey)),
+      )) as DbChangeResult | undefined;
+    if (typeof result?.meta?.changes === "number") {
+      movedTaskCount += result.meta.changes;
+    }
   }
+
+  return {
+    pastTaskCount: pastTasks.length,
+    candidateRootCount: rootIdsToMove.size,
+    candidateTaskCount: tasksToMove.length,
+    movedTaskCount,
+  };
 };
 
 const isValidMode = (mode: unknown): mode is "notes" | "todos" =>
@@ -177,27 +216,42 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
+  const userId = (session.user as { id: string }).id;
 
   const url = new URL(request.url);
   const mode = url.searchParams.get("mode");
   const date = url.searchParams.get("date");
+  const today = url.searchParams.get("today");
+  const tz = url.searchParams.get("tz");
+  const timeZone = typeof tz === "string" && tz.trim().length > 0 ? tz : null;
 
-  if (!isValidMode(mode) || !isValidDate(date)) {
+  if (
+    !isValidMode(mode) ||
+    !isValidDate(date) ||
+    (mode === "todos" && !isValidDate(today))
+  ) {
     return new Response("Invalid parameters", { status: 400 });
   }
 
   const db = getDbFromContext(context);
+  const env = context.cloudflare.env;
 
   if (mode === "notes") {
     const rows = await db.query.note.findMany({
-      where: and(eq(note.userId, session.user.id), eq(note.noteDate, date)),
+      where: and(eq(note.userId, userId), eq(note.noteDate, date)),
     });
 
     if (!rows.length) {
       return Response.json({ content: null, updatedAt: null });
     }
 
-    const content = buildNoteDoc(rows);
+    const decryptedRows = await Promise.all(
+      rows.map(async (row) => ({
+        ...row,
+        body: await decryptAtRest(row.body, env),
+      })),
+    );
+    const content = buildNoteDoc(decryptedRows);
     return Response.json({
       content,
       updatedAt: getLatestUpdatedAt(rows),
@@ -205,18 +259,53 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
 
   const now = new Date();
-  const todayKey = formatDateKey(now);
-  await rolloverIncompleteTasks(db, session.user.id, todayKey, now);
+  const serverDateKey = formatDateKey(now);
+  const todayKey = today as string;
+  const rolloverStartedAt = Date.now();
+  const rolloverStats = await rolloverIncompleteTasks(
+    db,
+    userId,
+    todayKey,
+    now,
+  );
+  const reconcileStats = await reconcileOverdueScheduledTasksForUser(
+    db,
+    env as any,
+    {
+      userId,
+      fallbackTimeZone: timeZone,
+      now,
+    },
+  );
+  const rolloverElapsedMs = Date.now() - rolloverStartedAt;
+  console.info("editorContent.rollover", {
+    userId,
+    date,
+    today: todayKey,
+    serverDate: serverDateKey,
+    pastTaskCount: rolloverStats.pastTaskCount,
+    candidateRootCount: rolloverStats.candidateRootCount,
+    candidateTaskCount: rolloverStats.candidateTaskCount,
+    movedTaskCount: rolloverStats.movedTaskCount,
+    autoRescheduledCount: reconcileStats.movedCount,
+    elapsedMs: rolloverElapsedMs,
+  });
 
   const rows = await db.query.task.findMany({
-    where: and(eq(task.userId, session.user.id), eq(task.taskDate, date)),
+    where: and(eq(task.userId, userId), eq(task.taskDate, date)),
   });
 
   if (!rows.length) {
     return Response.json({ content: null, updatedAt: null });
   }
 
-  const content = buildTaskDoc(rows);
+  const decryptedRows = await Promise.all(
+    rows.map(async (row) => ({
+      ...row,
+      body: await decryptAtRest(row.body, env),
+    })),
+  );
+  const content = buildTaskDoc(decryptedRows);
   return Response.json({
     content,
     updatedAt: getLatestUpdatedAt(rows),
@@ -230,6 +319,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
+  const userId = (session.user as { id: string }).id;
 
   let payload: unknown;
   try {
@@ -254,10 +344,127 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const now = new Date();
   const db = getDbFromContext(context);
+  const env = context.cloudflare.env;
 
   if (mode === "notes") {
-    const incoming = extractNotesFromDoc(content as any, {
-      userId: session.user.id,
+    try {
+      const incoming = extractNotesFromDoc(content as any, {
+        userId,
+        dateKey: date,
+        now,
+      });
+      const incomingIds = new Set(incoming.map((row) => row.id));
+      const parentIds = incoming
+        .map((row) => row.parentId)
+        .filter((id): id is string => Boolean(id));
+      const invalidParentIds = await getInvalidParentIds(
+        db,
+        "note",
+        userId,
+        parentIds,
+        incomingIds,
+      );
+      if (invalidParentIds.length > 0) {
+        console.warn("editorContent.action.invalid_parent_reference", {
+          mode,
+          date,
+          userId,
+          invalidParentCount: invalidParentIds.length,
+        });
+        return new Response("Invalid parent reference", { status: 400 });
+      }
+
+      const existing = await db.query.note.findMany({
+        where: and(eq(note.userId, userId), eq(note.noteDate, date)),
+      });
+      const existingById = new Map(existing.map((row) => [row.id, row]));
+
+      const inserts = [] as typeof incoming;
+      const updates = [] as typeof incoming;
+
+      for (const row of incoming) {
+        if (existingById.has(row.id)) {
+          updates.push(row);
+        } else {
+          inserts.push(row);
+        }
+      }
+
+      if (updates.length > 0) {
+        for (const row of updates) {
+          const encryptedBody = await encryptAtRest(row.body, env);
+          await db
+            .update(note)
+            .set({
+              parentId: row.parentId,
+              depth: row.depth,
+              body: encryptedBody,
+              noteDate: row.noteDate,
+              sortOrder: row.sortOrder,
+              updatedAt: now,
+            })
+            .where(and(eq(note.id, row.id), eq(note.userId, userId)));
+        }
+      }
+
+      if (inserts.length > 0) {
+        for (const row of inserts) {
+          const encryptedBody = await encryptAtRest(row.body, env);
+
+          // Race-safe insert: if another request inserts first, do nothing.
+          await db
+            .insert(note)
+            .values({ ...row, body: encryptedBody })
+            .onConflictDoNothing({ target: note.id });
+
+          // Ensure row shape is consistent for this user even after conflicts.
+          await db
+            .update(note)
+            .set({
+              parentId: row.parentId,
+              depth: row.depth,
+              body: encryptedBody,
+              noteDate: row.noteDate,
+              sortOrder: row.sortOrder,
+              updatedAt: now,
+            })
+            .where(and(eq(note.id, row.id), eq(note.userId, userId)));
+        }
+      }
+
+      const deleteIds = existing
+        .filter((row) => !incomingIds.has(row.id))
+        .map((row) => row.id);
+      if (deleteIds.length > 0) {
+        await db
+          .delete(note)
+          .where(
+            and(
+              eq(note.userId, userId),
+              eq(note.noteDate, date),
+              inArray(note.id, deleteIds),
+            ),
+          );
+      }
+
+      return Response.json({ ok: true, updatedAt: now.getTime() });
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error("editorContent.action.persist_failed", {
+        mode,
+        date,
+        userId,
+        error: errorMessage,
+      });
+      return new Response(`Failed to persist editor content: ${errorMessage}`, {
+        status: 500,
+      });
+    }
+  }
+
+  try {
+    const incoming = extractTasksFromDoc(content as any, {
+      userId,
       dateKey: date,
       now,
     });
@@ -267,22 +474,29 @@ export async function action({ request, context }: ActionFunctionArgs) {
       .filter((id): id is string => Boolean(id));
     const invalidParentIds = await getInvalidParentIds(
       db,
-      "note",
-      session.user.id,
+      "task",
+      userId,
       parentIds,
       incomingIds,
     );
     if (invalidParentIds.length > 0) {
+      console.warn("editorContent.action.invalid_parent_reference", {
+        mode,
+        date,
+        userId,
+        invalidParentCount: invalidParentIds.length,
+      });
       return new Response("Invalid parent reference", { status: 400 });
     }
 
-    const existing = await db.query.note.findMany({
-      where: and(eq(note.userId, session.user.id), eq(note.noteDate, date)),
+    const existing = await db.query.task.findMany({
+      where: and(eq(task.userId, userId), eq(task.taskDate, date)),
     });
     const existingById = new Map(existing.map((row) => [row.id, row]));
 
     const inserts = [] as typeof incoming;
     const updates = [] as typeof incoming;
+    const completedTaskIds = new Set<string>();
 
     for (const row of incoming) {
       if (existingById.has(row.id)) {
@@ -294,22 +508,72 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
     if (updates.length > 0) {
       for (const row of updates) {
+        const previous = existingById.get(row.id);
+        let completedAt = previous?.completedAt ?? null;
+        if (row.status === "done") {
+          if (!completedAt) completedAt = now;
+          if (previous?.status !== "done") {
+            completedTaskIds.add(row.id);
+          }
+        } else {
+          completedAt = null;
+        }
+        const encryptedBody = await encryptAtRest(row.body, env);
+
         await db
-          .update(note)
+          .update(task)
           .set({
             parentId: row.parentId,
             depth: row.depth,
-            body: row.body,
-            noteDate: row.noteDate,
+            status: row.status,
+            body: encryptedBody,
+            taskDate: row.taskDate,
             sortOrder: row.sortOrder,
             updatedAt: now,
+            completedAt,
           })
-          .where(and(eq(note.id, row.id), eq(note.userId, session.user.id)));
+          .where(and(eq(task.id, row.id), eq(task.userId, userId)));
       }
     }
 
     if (inserts.length > 0) {
-      await db.insert(note).values(inserts);
+      for (const row of inserts) {
+        const previous = existingById.get(row.id);
+        let completedAt = previous?.completedAt ?? null;
+        if (row.status === "done") {
+          if (!completedAt) completedAt = now;
+          completedTaskIds.add(row.id);
+        } else {
+          completedAt = null;
+        }
+        const encryptedBody = await encryptAtRest(row.body, env);
+
+        // Race-safe insert: if another request inserts first, do nothing.
+        await db
+          .insert(task)
+          .values({
+            ...row,
+            body: encryptedBody,
+            completedAt,
+            updatedAt: now,
+          })
+          .onConflictDoNothing({ target: task.id });
+
+        // Ensure row shape is consistent for this user even after conflicts.
+        await db
+          .update(task)
+          .set({
+            parentId: row.parentId,
+            depth: row.depth,
+            status: row.status,
+            body: encryptedBody,
+            taskDate: row.taskDate,
+            sortOrder: row.sortOrder,
+            updatedAt: now,
+            completedAt,
+          })
+          .where(and(eq(task.id, row.id), eq(task.userId, userId)));
+      }
     }
 
     const deleteIds = existing
@@ -317,99 +581,37 @@ export async function action({ request, context }: ActionFunctionArgs) {
       .map((row) => row.id);
     if (deleteIds.length > 0) {
       await db
-        .delete(note)
+        .delete(task)
         .where(
           and(
-            eq(note.userId, session.user.id),
-            eq(note.noteDate, date),
-            inArray(note.id, deleteIds),
+            eq(task.userId, userId),
+            eq(task.taskDate, date),
+            inArray(task.id, deleteIds),
           ),
         );
     }
 
-    return Response.json({ ok: true, updatedAt: now.getTime() });
-  }
-
-  const incoming = extractTasksFromDoc(content as any, {
-    userId: session.user.id,
-    dateKey: date,
-    now,
-  });
-  const incomingIds = new Set(incoming.map((row) => row.id));
-  const parentIds = incoming
-    .map((row) => row.parentId)
-    .filter((id): id is string => Boolean(id));
-  const invalidParentIds = await getInvalidParentIds(
-    db,
-    "task",
-    session.user.id,
-    parentIds,
-    incomingIds,
-  );
-  if (invalidParentIds.length > 0) {
-    return new Response("Invalid parent reference", { status: 400 });
-  }
-
-  const existing = await db.query.task.findMany({
-    where: and(eq(task.userId, session.user.id), eq(task.taskDate, date)),
-  });
-  const existingById = new Map(existing.map((row) => [row.id, row]));
-
-  const inserts = [] as typeof incoming;
-  const updates = [] as typeof incoming;
-
-  for (const row of incoming) {
-    if (existingById.has(row.id)) {
-      updates.push(row);
-    } else {
-      inserts.push(row);
-    }
-  }
-
-  if (updates.length > 0) {
-    for (const row of updates) {
-      const previous = existingById.get(row.id);
-      let completedAt = previous?.completedAt ?? null;
-      if (row.status === "done") {
-        if (!completedAt) completedAt = now;
-      } else {
-        completedAt = null;
+    if (completedTaskIds.size > 0) {
+      for (const taskId of completedTaskIds) {
+        await handleTaskCompletedForScheduling(db, env as any, {
+          userId,
+          taskId,
+          now,
+        });
       }
-
-      await db
-        .update(task)
-        .set({
-          parentId: row.parentId,
-          depth: row.depth,
-          status: row.status,
-          body: row.body,
-          taskDate: row.taskDate,
-          sortOrder: row.sortOrder,
-          updatedAt: now,
-          completedAt,
-        })
-        .where(and(eq(task.id, row.id), eq(task.userId, session.user.id)));
     }
-  }
 
-  if (inserts.length > 0) {
-    await db.insert(task).values(inserts);
+    return Response.json({ ok: true, updatedAt: now.getTime() });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error("editorContent.action.persist_failed", {
+      mode,
+      date,
+      userId,
+      error: errorMessage,
+    });
+    return new Response(`Failed to persist editor content: ${errorMessage}`, {
+      status: 500,
+    });
   }
-
-  const deleteIds = existing
-    .filter((row) => !incomingIds.has(row.id))
-    .map((row) => row.id);
-  if (deleteIds.length > 0) {
-    await db
-      .delete(task)
-      .where(
-        and(
-          eq(task.userId, session.user.id),
-          eq(task.taskDate, date),
-          inArray(task.id, deleteIds),
-        ),
-      );
-  }
-
-  return Response.json({ ok: true, updatedAt: now.getTime() });
 }

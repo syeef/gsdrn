@@ -2,8 +2,10 @@ import {
   sqliteTable,
   text,
   integer,
+  real,
   index,
   uniqueIndex,
+  type AnySQLiteColumn,
 } from "drizzle-orm/sqlite-core";
 
 export const user = sqliteTable("user", {
@@ -38,6 +40,7 @@ export const userExt = sqliteTable("user_ext", {
   onboardingChoice: text("onboarding_choice"), // "vm" | "ai" | null
   onboardingWelcome: text("onboarding_welcome").notNull().default("pending"), // "pending" | "complete"
   kycStatus: text("kyc_status").notNull().default("pending"), // "pending" | "success" | "fail"
+  tier: text("tier").notNull().default("trial"), // "free" | "plus" | "vip" | "trial"
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
@@ -93,7 +96,7 @@ export const task = sqliteTable(
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    parentId: text("parent_id").references(() => task.id, {
+    parentId: text("parent_id").references((): AnySQLiteColumn => task.id, {
       onDelete: "cascade",
     }),
     depth: integer("depth").notNull().default(0),
@@ -148,6 +151,78 @@ export const note = sqliteTable(
   }),
 );
 
+export const label = sqliteTable(
+  "label",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    normalizedName: text("normalized_name").notNull(),
+    color: text("color").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => ({
+    userUpdatedIdx: index("label_user_updated_idx").on(table.userId, table.updatedAt),
+    userNormalizedUq: uniqueIndex("label_user_normalized_name_uq").on(
+      table.userId,
+      table.normalizedName,
+    ),
+  }),
+);
+
+export const taskLabel = sqliteTable(
+  "task_label",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    taskId: text("task_id")
+      .notNull()
+      .references(() => task.id, { onDelete: "cascade" }),
+    labelId: text("label_id")
+      .notNull()
+      .references(() => label.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => ({
+    userTaskLabelUq: uniqueIndex("task_label_user_task_label_uq").on(
+      table.userId,
+      table.taskId,
+      table.labelId,
+    ),
+    userTaskIdx: index("task_label_user_task_idx").on(table.userId, table.taskId),
+    userLabelIdx: index("task_label_user_label_idx").on(table.userId, table.labelId),
+  }),
+);
+
+export const noteLabel = sqliteTable(
+  "note_label",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    noteId: text("note_id")
+      .notNull()
+      .references(() => note.id, { onDelete: "cascade" }),
+    labelId: text("label_id")
+      .notNull()
+      .references(() => label.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => ({
+    userNoteLabelUq: uniqueIndex("note_label_user_note_label_uq").on(
+      table.userId,
+      table.noteId,
+      table.labelId,
+    ),
+    userNoteIdx: index("note_label_user_note_idx").on(table.userId, table.noteId),
+    userLabelIdx: index("note_label_user_label_idx").on(table.userId, table.labelId),
+  }),
+);
+
 export const editorDraft = sqliteTable(
   "editor_draft",
   {
@@ -170,6 +245,98 @@ export const editorDraft = sqliteTable(
       table.userId,
       table.mode,
       table.editorDate,
+    ),
+  }),
+);
+
+export const googleCalendarPreference = sqliteTable(
+  "google_calendar_preference",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    providerId: text("provider_id").notNull().default("google"),
+    providerAccountId: text("provider_account_id").notNull(),
+    calendarId: text("calendar_id").notNull(),
+    isVisible: integer("is_visible", { mode: "boolean" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => ({
+    userProviderAccountIdx: index("gcal_pref_user_provider_account_idx").on(
+      table.userId,
+      table.providerId,
+      table.providerAccountId,
+    ),
+    userCalendarUq: uniqueIndex("gcal_pref_user_account_calendar_uq").on(
+      table.userId,
+      table.providerId,
+      table.providerAccountId,
+      table.calendarId,
+    ),
+  }),
+);
+
+export const workingHoursPreference = sqliteTable("working_hours_preference", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  enabled: integer("enabled", { mode: "boolean" }).notNull().default(true),
+  scheduleJson: text("schedule_json").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const userScheduleProfile = sqliteTable("user_schedule_profile", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  timeZone: text("time_zone").notNull(),
+  paceMultiplier: real("pace_multiplier").notNull().default(1),
+  successCount: integer("success_count").notNull().default(0),
+  rescheduleCount: integer("reschedule_count").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const taskSchedule = sqliteTable(
+  "task_schedule",
+  {
+    id: text("id").primaryKey(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    taskId: text("task_id")
+      .notNull()
+      .references(() => task.id, { onDelete: "cascade" }),
+    status: text("status").notNull().default("scheduled"),
+    calendarId: text("calendar_id"),
+    eventId: text("event_id"),
+    scheduledStart: integer("scheduled_start", { mode: "timestamp" }),
+    scheduledEnd: integer("scheduled_end", { mode: "timestamp" }),
+    estimatedMinutes: integer("estimated_minutes"),
+    aiCategory: text("ai_category"),
+    aiConfidence: real("ai_confidence"),
+    autoRescheduleCount: integer("auto_reschedule_count").notNull().default(0),
+    lastScheduledLocalDate: text("last_scheduled_local_date"),
+    lastErrorCode: text("last_error_code"),
+    lastErrorMessage: text("last_error_message"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+  },
+  (table) => ({
+    userTaskUq: uniqueIndex("task_schedule_user_task_uq").on(
+      table.userId,
+      table.taskId,
+    ),
+    userStatusIdx: index("task_schedule_user_status_idx").on(
+      table.userId,
+      table.status,
+    ),
+    userLocalDateIdx: index("task_schedule_user_local_date_idx").on(
+      table.userId,
+      table.lastScheduledLocalDate,
     ),
   }),
 );
@@ -198,5 +365,30 @@ export type NewTask = typeof task.$inferInsert;
 export type Note = typeof note.$inferSelect;
 export type NewNote = typeof note.$inferInsert;
 
+export type Label = typeof label.$inferSelect;
+export type NewLabel = typeof label.$inferInsert;
+
+export type TaskLabel = typeof taskLabel.$inferSelect;
+export type NewTaskLabel = typeof taskLabel.$inferInsert;
+
+export type NoteLabel = typeof noteLabel.$inferSelect;
+export type NewNoteLabel = typeof noteLabel.$inferInsert;
+
 export type EditorDraft = typeof editorDraft.$inferSelect;
 export type NewEditorDraft = typeof editorDraft.$inferInsert;
+
+export type GoogleCalendarPreference = typeof googleCalendarPreference.$inferSelect;
+export type NewGoogleCalendarPreference =
+  typeof googleCalendarPreference.$inferInsert;
+
+export type WorkingHoursPreference = typeof workingHoursPreference.$inferSelect;
+export type NewWorkingHoursPreference =
+  typeof workingHoursPreference.$inferInsert;
+
+export type UserScheduleProfile = typeof userScheduleProfile.$inferSelect;
+export type NewUserScheduleProfile = typeof userScheduleProfile.$inferInsert;
+
+export type TaskSchedule = typeof taskSchedule.$inferSelect;
+export type NewTaskSchedule = typeof taskSchedule.$inferInsert;
+
+export type UserTier = "free" | "plus" | "vip" | "trial";

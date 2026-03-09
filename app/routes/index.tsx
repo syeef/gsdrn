@@ -159,7 +159,7 @@ export default function index() {
         <main className={styles.page}>
           <div className={styles.hero}>
             <div>
-              <Title variant="Hedvig" as="h1" headingColor="gray">
+              <Title variant="CrimsonPro" as="h1" headingColor="gray">
                 Less chaos, more progress
               </Title>
               <p>An elegant view of your schedule, tasks, and notes.</p>

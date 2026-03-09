@@ -1,0 +1,39 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+}
+
+.spinner {
+  position: relative;
+}
+
+.bar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 24%;
+  height: 8%;
+  margin-left: -12%;
+  margin-top: -4%;
+
+  border-radius: 4px;
+  transform-origin: center left;
+
+  animation: fade-spin 1.2s linear infinite;
+}
+
+.label {
+  font-size: var(--f6);
+  color: var(--gray-9);
+  white-space: nowrap;
+}
+
+@keyframes fade-spin {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.15;
+  }
+}

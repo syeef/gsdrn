@@ -125,6 +125,21 @@ export function createBetterAuth(
             }
             return { data: payload };
           },
+          after: async (user) => {
+            await kysely
+              .insertInto("userExt")
+              .values({
+                userId: user.id,
+                onboardingStatus: "pending",
+                onboardingChoice: null,
+                onboardingWelcome: "pending",
+                kycStatus: "pending",
+                tier: "trial",
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+              })
+              .execute();
+          },
         },
       },
     },

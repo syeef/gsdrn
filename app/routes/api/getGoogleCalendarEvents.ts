@@ -17,33 +17,49 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   }
 
   const db = getDbFromContext(context);
+  const typedUser = session.user as { id: string };
   const url = new URL(request.url);
   const dateParam = url.searchParams.get("date");
   const tzOffsetParam = url.searchParams.get("tzOffset");
-  const tzOffset = tzOffsetParam ? Number(tzOffsetParam) : null;
-  const dateKey = isValidDateKey(dateParam) ? dateParam : undefined;
-  const tzOffsetMinutes = Number.isFinite(tzOffset) ? tzOffset : undefined;
+  const tzOffset = tzOffsetParam ? Number(tzOffsetParam) : undefined;
+  const dateKey =
+    isValidDateKey(dateParam) && typeof dateParam === "string"
+      ? dateParam
+      : undefined;
+  const tzOffsetMinutes =
+    tzOffset !== undefined && Number.isFinite(tzOffset)
+      ? tzOffset
+      : undefined;
 
   try {
     const result = await listUpcomingEventsForUser(
       db,
       {
-        GOOGLE_CLIENT_ID: context.cloudflare.env.GOOGLE_CLIENT_ID,
-        GOOGLE_CLIENT_SECRET: context.cloudflare.env.GOOGLE_CLIENT_SECRET,
+        GOOGLE_CLIENT_ID: context.cloudflare.env.GOOGLE_CLIENT_ID as string,
+        GOOGLE_CLIENT_SECRET: context.cloudflare.env
+          .GOOGLE_CLIENT_SECRET as string,
       },
-      session.user.id,
+      typedUser.id,
       { dateKey, tzOffsetMinutes }
     );
 
     // Normalize just in case
     if (!result || typeof result.connected !== "boolean") {
-      return Response.json({ connected: false, events: [] });
+      return Response.json({
+        connected: false,
+        events: [],
+        calendarStats: { totalCalendars: 0, visibleCalendars: 0 },
+      });
     }
 
     return Response.json(result);
   } catch (err) {
     console.error("Error in getGoogleCalendarEvents loader:", err);
     // Last-resort safety: never blow up the UI for calendar issues
-    return Response.json({ connected: false, events: [] });
+    return Response.json({
+      connected: false,
+      events: [],
+      calendarStats: { totalCalendars: 0, visibleCalendars: 0 },
+    });
   }
 }

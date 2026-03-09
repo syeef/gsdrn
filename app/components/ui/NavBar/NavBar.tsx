@@ -4,6 +4,7 @@ import Button from "../Button/Button";
 
 import styles from "./NavBar.module.css";
 import { LogoMark } from "../Icons/Icons";
+import { ShinyButton } from "../Button/ShinyButton";
 
 type NavBarProps = {
   user?: any;
@@ -21,10 +22,10 @@ export default function NavBar({ user, dateKey, isSaving }: NavBarProps) {
   return (
     <nav className={styles.navBarContainer}>
       <div className={styles.navBarContents}>
-        <LogoMark height={24} width={24} />
-        <Button variant="primary" onClick={handleGetStartedClick}>
+        <LogoMark height={24} width={24} color="var(--gray-10)" />
+        <ShinyButton variant="Button" onClick={handleGetStartedClick}>
           Get Started
-        </Button>
+        </ShinyButton>
       </div>
 
       <Hr marginSize="small" />

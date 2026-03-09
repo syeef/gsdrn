@@ -11,7 +11,7 @@ type DateNavigatorProps = {
 };
 
 const displayDateFormatter = new Intl.DateTimeFormat("en-GB", {
-  weekday: "short",
+  weekday: "long",
   day: "numeric",
   month: "long",
   year: "numeric",
@@ -82,10 +82,10 @@ export default function DateNavigator({ dateKey, status }: DateNavigatorProps) {
   return (
     <div className={styles.container}>
       <div className={styles.dateGroup}>
-        <Title variant="Lora" as="h2" className={styles.dateText}>
+        <Title variant="PaperMono" as="h2" className={styles.dateText}>
           {displayDate}
         </Title>
-        {status ? <div className={styles.status}>{status}</div> : null}
+        {/* {status ? <div className={styles.status}>{status}</div> : null} */}
       </div>
 
       <div className={styles.controls}>
@@ -106,6 +106,8 @@ export default function DateNavigator({ dateKey, status }: DateNavigatorProps) {
           <IconChevronRight />
         </button>
       </div>
+
+      {status ? <div className={styles.status}>{status}</div> : null}
     </div>
   );
 }

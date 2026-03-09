@@ -203,7 +203,7 @@ export function FeaturedContentParallax({ items, stepHeight = "70vh" }: Props) {
               transition={textTransition}
             >
               <Title
-                variant="Hedvig"
+                variant="CrimsonPro"
                 as="h1"
                 className={styles.title}
                 headingColor={current.headingColor}

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { he } from "zod/v4/locales";
 
 type IconProps = React.SVGProps<SVGSVGElement> & {
   color?: string;
@@ -628,6 +629,96 @@ export function IconDevices2({
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconDotGridVertical2x3({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5.75 8C5.75 8.4142 5.41421 8.75 5 8.75C4.58579 8.75 4.25 8.4142 4.25 8C4.25 7.5858 4.58579 7.25 5 7.25C5.41421 7.25 5.75 7.5858 5.75 8Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M11.75 8C11.75 8.4142 11.4142 8.75 11 8.75C10.5858 8.75 10.25 8.4142 10.25 8C10.25 7.5858 10.5858 7.25 11 7.25C11.4142 7.25 11.75 7.5858 11.75 8Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M5.75 14.5C5.75 14.9142 5.41421 15.25 5 15.25C4.58579 15.25 4.25 14.9142 4.25 14.5C4.25 14.0858 4.58579 13.75 5 13.75C5.41421 13.75 5.75 14.0858 5.75 14.5Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M11.75 14.5C11.75 14.9142 11.4142 15.25 11 15.25C10.5858 15.25 10.25 14.9142 10.25 14.5C10.25 14.0858 10.5858 13.75 11 13.75C11.4142 13.75 11.75 14.0858 11.75 14.5Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M5.75 1.5C5.75 1.91421 5.41421 2.25 5 2.25C4.58579 2.25 4.25 1.91421 4.25 1.5C4.25 1.08579 4.58579 0.75 5 0.75C5.41421 0.75 5.75 1.08579 5.75 1.5Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M11.75 1.5C11.75 1.91421 11.4142 2.25 11 2.25C10.5858 2.25 10.25 1.91421 10.25 1.5C10.25 1.08579 10.5858 0.75 11 0.75C11.4142 0.75 11.75 1.08579 11.75 1.5Z"
+        stroke={color}
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function IconDotsHorizontal({
+  color = "currentColor",
+  height = 24,
+  width = 24,
+  ...rest
+}: IconProps) {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9 8C9 8.5523 8.5523 9 8 9C7.4477 9 7 8.5523 7 8C7 7.4477 7.4477 7 8 7C8.5523 7 9 7.4477 9 8Z"
+        fill={color}
+      />
+      <path
+        d="M5 8C5 8.5523 4.55228 9 4 9C3.44772 9 3 8.5523 3 8C3 7.4477 3.44772 7 4 7C4.55228 7 5 7.4477 5 8Z"
+        fill={color}
+      />
+      <path
+        d="M13 8C13 8.5523 12.5523 9 12 9C11.4477 9 11 8.5523 11 8C11 7.4477 11.4477 7 12 7C12.5523 7 13 7.4477 13 8Z"
+        fill={color}
       />
     </svg>
   );

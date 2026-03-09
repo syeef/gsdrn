@@ -16,14 +16,20 @@
       "migrations_dir": "drizzle",
     },
   ],
+  "ai": {
+    "binding": "AI",
+  },
+  "triggers": {
+    "crons": ["0 * * * *"],
+  },
 
   "env": {
     // Production details
     "production": {
       "vars": {
-        "BETTER_AUTH_URL": "https://gsdr.now",
+        "BETTER_AUTH_URL": "https://tiketana.com",
         "RESEND_FROM": "Beef Bros <orders@beefbros.co.uk>",
-        "SITE_URL": "https://gsdr.now",
+        "SITE_URL": "https://tiketana.com",
         "BETTER_AUTH_SECRET": "",
       },
       "d1_databases": [
@@ -36,7 +42,7 @@
       ],
       "routes": [
         {
-          "pattern": "gsdr.now",
+          "pattern": "tiketana.com",
           "custom_domain": true,
         },
       ],

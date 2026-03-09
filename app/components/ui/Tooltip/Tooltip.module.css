@@ -1,0 +1,44 @@
+.tooltip {
+  background: rgba(20, 20, 20, 0.95);
+  color: white;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* .arrow {
+  fill: rgba(20, 20, 20, 0.95);
+} */
+
+.Arrow {
+  display: flex;
+
+  &[data-side="top"] {
+    bottom: -8px;
+    rotate: 180deg;
+  }
+
+  &[data-side="bottom"] {
+    top: -8px;
+    rotate: 0deg;
+  }
+
+  &[data-side="left"] {
+    right: -13px;
+    rotate: 90deg;
+  }
+
+  &[data-side="right"] {
+    left: -13px;
+    rotate: -90deg;
+  }
+}
+
+.ArrowFill {
+  fill: canvas;
+}
+
+.ArrowOuterStroke {
+  fill: var(--gray-4);
+}

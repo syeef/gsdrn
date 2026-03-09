@@ -3,7 +3,15 @@ import styles from "./Title.module.css";
 
 type HeadingColor = "default" | "orange" | "blue" | "purple" | "green" | "gray";
 type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-type TitleVariant = "Hedvig" | "Lora" | "Inter" | "GoogleSans";
+type TitleVariant =
+  | "CrimsonPro"
+  | "WorkSans"
+  | "Hedvig"
+  | "Lora"
+  | "Inter"
+  | "GoogleSans"
+  | "DepartureMono"
+  | "PaperMono";
 
 interface TitleProps {
   children: React.ReactNode;
@@ -27,6 +35,10 @@ const variantToClass: Record<TitleVariant, string> = {
   Inter: styles.Inter,
   Lora: styles.Lora,
   Hedvig: styles.Hedvig,
+  DepartureMono: styles.DepartureMono,
+  WorkSans: styles.WorkSans,
+  CrimsonPro: styles.CrimsonPro,
+  PaperMono: styles.PaperMono,
 };
 
 type TitleComponent = React.FC<TitleProps> & {
@@ -41,7 +53,7 @@ type TitleComponent = React.FC<TitleProps> & {
 
 const Title: TitleComponent = function Title({
   children,
-  variant = "Hedvig",
+  variant = "CrimsonPro",
   className = "",
   as = "h1",
   headingColor = "default",

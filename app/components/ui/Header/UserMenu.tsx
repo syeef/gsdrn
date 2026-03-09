@@ -1,8 +1,18 @@
 import * as React from "react";
 import { NavLink, Form, useRouteLoaderData } from "react-router";
 import { IconPreferences, IconProjects, IconSignOut } from "../Icons/Icons";
+import Badge from "~/components/ui/Badge/Badge";
+import type { UserTier } from "~/utils/tier";
+import type { loader as rootLoader } from "~/root";
 
 import styles from "./UserMenu.module.css";
+
+const TIER_LABEL: Record<UserTier, string> = {
+  free: "Free",
+  trial: "Trial",
+  plus: "Plus",
+  vip: "VIP",
+};
 
 function AuthAwareSignOut() {
   const data = useRouteLoaderData<typeof rootLoader>("root");
@@ -58,14 +68,24 @@ function NavigationList({ onNavigate }: { onNavigate?: () => void }) {
 
 export default function UserMenu() {
   const data = useRouteLoaderData<typeof rootLoader>("root");
+  const user = (data as any)?.user ?? null;
+  const tier = ((data as any)?.tier as UserTier | null) ?? null;
+
+  if (!user) return null;
 
   return (
     <div className={styles.userMenu}>
       <div className={styles.metaDetails}>
+        {tier && (
+          <Badge
+            label={TIER_LABEL[tier]}
+            variant={tier === "free" ? "secondary" : "primary"}
+          />
+        )}
         <p>
-          {data.user.firstName} {data.user.lastName}
+          {user.firstName} {user.lastName}
         </p>
-        <p>{data.user.email}</p>
+        <p>{user.email}</p>
       </div>
 
       <NavigationList />

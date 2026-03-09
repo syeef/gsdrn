@@ -4,7 +4,8 @@ footer.footer {
   height: fit-content;
   z-index: 0;
   /* background-color: rgba(23, 23, 23, 0.16); */
-  background-color: var(--gray-1);
+  /* background-color: var(--gray-1); */
+  background: color-mix(in srgb, var(--gray-1) 72%, #000000);
   padding-bottom: var(--spacing-extra-large);
   display: flex;
   flex-direction: column;

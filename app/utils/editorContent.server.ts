@@ -1,4 +1,4 @@
-import type { JSONContent } from "@tiptap/core";
+import type { YooptaContentValue } from "@yoopta/editor";
 import { nanoid } from "nanoid";
 import type { NewNote, NewTask, Note, Task } from "~/database/schema";
 
@@ -8,56 +8,30 @@ type ExtractOptions = {
   now: Date;
 };
 
-const getNodeId = (node: JSONContent | null | undefined) => {
-  const raw = (node as JSONContent | undefined)?.attrs?.id;
-  if (typeof raw === "string" && raw.trim().length > 0) return raw;
-  return nanoid();
-};
+// A Slate descendant node — either a Text node or an Element node.
+type SlateDescendant = { text: string } | { type: string; children: SlateDescendant[]; [key: string]: unknown };
 
-const emptyParagraph = (): JSONContent => ({
-  type: "paragraph",
-  content: [],
-});
-
-const getContentArray = (node: JSONContent | null | undefined): JSONContent[] => {
-  if (!node || typeof node !== "object") return [];
-  const content = (node as JSONContent).content;
-  return Array.isArray(content) ? (content as JSONContent[]) : [];
-};
-
-const findChildNode = (
-  node: JSONContent | null | undefined,
-  type: string,
-): JSONContent | null =>
-  getContentArray(node).find((child) => child?.type === type) ?? null;
-
-const normalizeParagraph = (node: JSONContent | null | undefined): JSONContent => {
-  if (node && node.type === "paragraph") return node;
-  return emptyParagraph();
-};
-
-const hasMeaningfulContent = (node: JSONContent | null | undefined): boolean => {
-  if (!node || node.type !== "paragraph") return false;
-  const content = getContentArray(node);
-  if (content.length === 0) return false;
-  return content.some((child) => {
-    if (!child || typeof child !== "object") return false;
-    if (child.type === "text") {
-      return Boolean(child.text && child.text.trim().length > 0);
+const hasMeaningfulSlateContent = (children: SlateDescendant[]): boolean => {
+  if (!Array.isArray(children) || children.length === 0) return false;
+  return children.some((node) => {
+    if (!node || typeof node !== "object") return false;
+    if ("text" in node) {
+      return typeof node.text === "string" && node.text.trim().length > 0;
     }
+    // Element node (e.g., link) — counts as meaningful
     return true;
   });
 };
 
-const parseParagraph = (raw: string | null | undefined): JSONContent => {
-  if (!raw) return emptyParagraph();
+const parseSlateChildren = (raw: string | null | undefined): SlateDescendant[] => {
+  if (!raw) return [{ text: "" }];
   try {
-    const parsed = JSON.parse(raw) as JSONContent;
-    if (parsed && parsed.type === "paragraph") return parsed;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed as SlateDescendant[];
   } catch {
-    // Fall through to default paragraph.
+    // Fall through
   }
-  return emptyParagraph();
+  return [{ text: "" }];
 };
 
 export const getLatestUpdatedAt = (
@@ -73,131 +47,100 @@ export const getLatestUpdatedAt = (
 };
 
 export const extractTasksFromDoc = (
-  doc: JSONContent | null | undefined,
+  doc: YooptaContentValue | null | undefined,
   options: ExtractOptions,
 ): NewTask[] => {
+  if (!doc || typeof doc !== "object") return [];
+
+  const blocks = Object.values(doc)
+    .filter((block) => block.type === "TodoList")
+    .sort((a, b) => a.meta.order - b.meta.order);
+
   const rows: NewTask[] = [];
-  const listNodes = getContentArray(doc).filter(
-    (node) => node?.type === "taskList",
-  );
+  const parentStack: string[] = [];
+  const sortOrderMap = new Map<string | null, number>();
 
-  const walkTaskList = (
-    listNode: JSONContent,
-    parentId: string | null,
-    depth: number,
-    startOrder = 0,
-  ): number => {
-    const items = getContentArray(listNode);
-    let sortOrder = startOrder;
+  for (const block of blocks) {
+    const depth = block.meta.depth ?? 0;
+    const element = block.value[0] as any;
+    if (!element) continue;
 
-    for (const item of items) {
-      if (item?.type !== "taskItem") continue;
+    const children = (element.children ?? []) as SlateDescendant[];
+    if (!hasMeaningfulSlateContent(children)) continue;
 
-      const paragraph = findChildNode(item, "paragraph");
-      const childList = findChildNode(item, "taskList");
-      const hasChildren =
-        !!childList &&
-        getContentArray(childList).some((child) => child?.type === "taskItem");
-      const hasBody = hasMeaningfulContent(paragraph);
+    const parentId = depth > 0 ? (parentStack[depth - 1] ?? null) : null;
 
-      if (!hasBody && !hasChildren) continue;
+    parentStack[depth] = block.id;
+    parentStack.splice(depth + 1);
 
-      const id = getNodeId(item);
-      const checked = Boolean(item?.attrs && (item.attrs as any).checked);
-      const status = checked ? "done" : "todo";
+    const sortOrder = sortOrderMap.get(parentId) ?? 0;
+    sortOrderMap.set(parentId, sortOrder + 1);
 
-      rows.push({
-        id,
-        userId: options.userId,
-        parentId,
-        depth,
-        status,
-        body: JSON.stringify(normalizeParagraph(paragraph)),
-        taskDate: options.dateKey,
-        sortOrder,
-        rolloverCount: 0,
-        lastRolloverDate: null,
-        createdAt: options.now,
-        updatedAt: options.now,
-        completedAt: checked ? options.now : null,
-        archivedAt: null,
-      });
+    const checked = Boolean(element.props?.checked);
+    const status = checked ? "done" : "todo";
 
-      sortOrder += 1;
-
-      if (childList && hasChildren) {
-        walkTaskList(childList, id, depth + 1, 0);
-      }
-    }
-
-    return sortOrder;
-  };
-
-  let rootSortOrder = 0;
-  for (const listNode of listNodes) {
-    rootSortOrder = walkTaskList(listNode, null, 0, rootSortOrder);
+    rows.push({
+      id: block.id,
+      userId: options.userId,
+      parentId,
+      depth,
+      status,
+      body: JSON.stringify(children),
+      taskDate: options.dateKey,
+      sortOrder,
+      rolloverCount: 0,
+      lastRolloverDate: null,
+      createdAt: options.now,
+      updatedAt: options.now,
+      completedAt: checked ? options.now : null,
+      archivedAt: null,
+    });
   }
 
   return rows;
 };
 
 export const extractNotesFromDoc = (
-  doc: JSONContent | null | undefined,
+  doc: YooptaContentValue | null | undefined,
   options: ExtractOptions,
 ): NewNote[] => {
+  if (!doc || typeof doc !== "object") return [];
+
+  const blocks = Object.values(doc)
+    .filter((block) => block.type === "BulletedList")
+    .sort((a, b) => a.meta.order - b.meta.order);
+
   const rows: NewNote[] = [];
-  const listNodes = getContentArray(doc).filter(
-    (node) => node?.type === "bulletList",
-  );
+  const parentStack: string[] = [];
+  const sortOrderMap = new Map<string | null, number>();
 
-  const walkBulletList = (
-    listNode: JSONContent,
-    parentId: string | null,
-    depth: number,
-    startOrder = 0,
-  ): number => {
-    const items = getContentArray(listNode);
-    let sortOrder = startOrder;
+  for (const block of blocks) {
+    const depth = block.meta.depth ?? 0;
+    const element = block.value[0] as any;
+    if (!element) continue;
 
-    for (const item of items) {
-      if (item?.type !== "listItem") continue;
+    const children = (element.children ?? []) as SlateDescendant[];
+    if (!hasMeaningfulSlateContent(children)) continue;
 
-      const paragraph = findChildNode(item, "paragraph");
-      const childList = findChildNode(item, "bulletList");
-      const hasChildren =
-        !!childList &&
-        getContentArray(childList).some((child) => child?.type === "listItem");
-      const hasBody = hasMeaningfulContent(paragraph);
+    const parentId = depth > 0 ? (parentStack[depth - 1] ?? null) : null;
 
-      if (!hasBody && !hasChildren) continue;
+    parentStack[depth] = block.id;
+    parentStack.splice(depth + 1);
 
-      const id = getNodeId(item);
+    const sortOrder = sortOrderMap.get(parentId) ?? 0;
+    sortOrderMap.set(parentId, sortOrder + 1);
 
-      rows.push({
-        id,
-        userId: options.userId,
-        parentId,
-        depth,
-        body: JSON.stringify(normalizeParagraph(paragraph)),
-        noteDate: options.dateKey,
-        sortOrder,
-        createdAt: options.now,
-        updatedAt: options.now,
-      });
-
-      sortOrder += 1;
-
-      if (childList && hasChildren) {
-        walkBulletList(childList, id, depth + 1, 0);
-      }
-    }
-
-    return sortOrder;
-  };
-
-  let rootSortOrder = 0;
-  for (const listNode of listNodes) {
-    rootSortOrder = walkBulletList(listNode, null, 0, rootSortOrder);
+    rows.push({
+      id: block.id,
+      userId: options.userId,
+      parentId,
+      depth,
+      body: JSON.stringify(children),
+      noteDate: options.dateKey,
+      sortOrder,
+      createdAt: options.now,
+      updatedAt: options.now,
+    });
   }
 
   return rows;
@@ -223,78 +166,74 @@ const buildList = <T extends { id: string; parentId: string | null; sortOrder: n
   return { grouped, build };
 };
 
-export const buildTaskDoc = (rows: Task[]): JSONContent | null => {
+export const buildTaskDoc = (rows: Task[]): YooptaContentValue | null => {
   if (!rows.length) return null;
   const { build } = buildList(rows);
 
-  const buildItems = (parentId: string | null): JSONContent[] => {
-    const items = build(parentId);
-    return items.map((row) => {
-      const content: JSONContent[] = [parseParagraph(row.body)];
-      const children = buildItems(row.id);
-      if (children.length > 0) {
-        content.push({
-          type: "taskList",
-          content: children,
-        });
-      }
+  const result: YooptaContentValue = {};
+  let orderCounter = 0;
 
-      return {
-        type: "taskItem",
-        attrs: { checked: row.status === "done", id: row.id },
-        content,
-      } satisfies JSONContent;
-    });
+  const walkTree = (parentId: string | null, depth: number): void => {
+    const children = build(parentId);
+    for (const row of children) {
+      const slateChildren = parseSlateChildren(row.body);
+      const elemId = nanoid();
+
+      result[row.id] = {
+        id: row.id,
+        type: "TodoList",
+        value: [
+          {
+            id: elemId,
+            type: "todo-list",
+            children: slateChildren,
+            props: { checked: row.status === "done", nodeType: "block" },
+          } as any,
+        ],
+        meta: { order: orderCounter++, depth },
+      };
+
+      walkTree(row.id, depth + 1);
+    }
   };
 
-  const rootItems = buildItems(null);
-  if (rootItems.length === 0) return null;
+  walkTree(null, 0);
 
-  return {
-    type: "doc",
-    content: [
-      {
-        type: "taskList",
-        content: rootItems,
-      },
-    ],
-  };
+  return Object.keys(result).length > 0 ? result : null;
 };
 
-export const buildNoteDoc = (rows: Note[]): JSONContent | null => {
+export const buildNoteDoc = (rows: Note[]): YooptaContentValue | null => {
   if (!rows.length) return null;
   const { build } = buildList(rows);
 
-  const buildItems = (parentId: string | null): JSONContent[] => {
-    const items = build(parentId);
-    return items.map((row) => {
-      const content: JSONContent[] = [parseParagraph(row.body)];
-      const children = buildItems(row.id);
-      if (children.length > 0) {
-        content.push({
-          type: "bulletList",
-          content: children,
-        });
-      }
+  const result: YooptaContentValue = {};
+  let orderCounter = 0;
 
-      return {
-        type: "listItem",
-        attrs: { id: row.id },
-        content,
-      } satisfies JSONContent;
-    });
+  const walkTree = (parentId: string | null, depth: number): void => {
+    const children = build(parentId);
+    for (const row of children) {
+      const slateChildren = parseSlateChildren(row.body);
+      const elemId = nanoid();
+
+      result[row.id] = {
+        id: row.id,
+        type: "BulletedList",
+        value: [
+          {
+            id: elemId,
+            type: "bulleted-list",
+            children: slateChildren,
+            props: { nodeType: "block" },
+          } as any,
+        ],
+        meta: { order: orderCounter++, depth },
+      };
+
+      walkTree(row.id, depth + 1);
+    }
   };
 
-  const rootItems = buildItems(null);
-  if (rootItems.length === 0) return null;
+  walkTree(null, 0);
 
-  return {
-    type: "doc",
-    content: [
-      {
-        type: "bulletList",
-        content: rootItems,
-      },
-    ],
-  };
+  return Object.keys(result).length > 0 ? result : null;
 };

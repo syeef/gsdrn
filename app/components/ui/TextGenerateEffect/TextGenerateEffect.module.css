@@ -1,0 +1,13 @@
+.root {
+  display: inline;
+}
+
+.track {
+  display: inline;
+}
+
+.item {
+  display: inline;
+  opacity: 0;
+  /* inherit your assistant text styling */
+}

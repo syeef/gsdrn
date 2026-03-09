@@ -4,6 +4,7 @@ import { nanoid } from "nanoid";
 import { getAuth } from "~/lib/auth.server";
 import { editorDraft } from "~/database/schema";
 import { getDbFromContext } from "~/utils/db.service.server";
+import { decryptAtRest, encryptAtRest } from "~/utils/encryption.server";
 
 const isValidMode = (mode: unknown): mode is "notes" | "todos" =>
   mode === "notes" || mode === "todos";
@@ -18,6 +19,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
+  const userId = (session.user as { id: string }).id;
 
   const url = new URL(request.url);
   const mode = url.searchParams.get("mode");
@@ -30,7 +32,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const db = getDbFromContext(context);
   const draft = await db.query.editorDraft.findFirst({
     where: and(
-      eq(editorDraft.userId, session.user.id),
+      eq(editorDraft.userId, userId),
       eq(editorDraft.mode, mode),
       eq(editorDraft.editorDate, date),
     ),
@@ -42,7 +44,11 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   let content: unknown = null;
   try {
-    content = JSON.parse(draft.content);
+    const decryptedContent = await decryptAtRest(
+      draft.content,
+      context.cloudflare.env,
+    );
+    content = JSON.parse(decryptedContent);
   } catch {
     content = null;
   }
@@ -60,6 +66,7 @@ export async function action({ request, context }: ActionFunctionArgs) {
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
+  const userId = (session.user as { id: string }).id;
 
   let payload: unknown;
   try {
@@ -83,6 +90,10 @@ export async function action({ request, context }: ActionFunctionArgs) {
   }
 
   const contentString = JSON.stringify(content ?? null);
+  const encryptedContent = await encryptAtRest(
+    contentString,
+    context.cloudflare.env,
+  );
   const now = new Date();
 
   const db = getDbFromContext(context);
@@ -90,17 +101,17 @@ export async function action({ request, context }: ActionFunctionArgs) {
     .insert(editorDraft)
     .values({
       id: nanoid(),
-      userId: session.user.id,
+      userId,
       mode,
       editorDate: date,
-      content: contentString,
+      content: encryptedContent,
       createdAt: now,
       updatedAt: now,
     })
     .onConflictDoUpdate({
       target: [editorDraft.userId, editorDraft.mode, editorDraft.editorDate],
       set: {
-        content: contentString,
+        content: encryptedContent,
         updatedAt: now,
       },
     });

@@ -28,6 +28,20 @@ npm run db:generate
 npm run db:migrate
 ```
 
+### Required secrets
+
+Set a dedicated encryption secret for user task/note content at rest:
+
+```bash
+# 32 random bytes, base64-encoded
+openssl rand -base64 32
+```
+
+Store this value as `DATA_ENCRYPTION_KEY`:
+
+- Local: add it to `.env`
+- Cloudflare: `wrangler secret put DATA_ENCRYPTION_KEY`
+
 ### Development
 
 Run an initial database migration:

@@ -6,7 +6,6 @@ import {
   type ActionFunctionArgs,
 } from "react-router";
 import { getAuth } from "~/lib/auth.server";
-// import { getDbFromContext } from "~/utils/db.service.server";
 
 export async function action({ request, context }: ActionFunctionArgs) {
   const auth = getAuth(context);
@@ -38,16 +37,6 @@ export async function action({ request, context }: ActionFunctionArgs) {
 
   const headers = new Headers();
   if (authSetCookie) headers.append("Set-Cookie", authSetCookie);
-
-  try {
-    const session = await auth.api.getSession({
-      headers: { cookie: authSetCookie },
-    });
-    // const userId = session?.user?.id;
-    // if (userId) {
-    //   const db = getDbFromContext(context);
-    // }
-  } catch {}
 
   throw redirect(location, { headers });
 }
