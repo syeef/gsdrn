@@ -15,15 +15,15 @@
   justify-content: space-between;
   gap: 0.6rem;
   padding: 0.52rem 0.72rem;
-  border-bottom: 1px solid var(--gray-4);
+  border-bottom: 1px solid var(--gray-1);
   background: #000;
 }
 
 .previewShellTitle {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: var(--f6) !important;
   font-weight: 600;
-  color: var(--gray-10);
+  color: var(--gray-8) !important;
 }
 
 .previewShellTitleStack {

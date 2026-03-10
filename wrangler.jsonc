@@ -40,6 +40,12 @@
           "migrations_dir": "drizzle",
         },
       ],
+      "ai": {
+        "binding": "AI",
+      },
+      "triggers": {
+        "crons": ["0 * * * *"],
+      },
       "routes": [
         {
           "pattern": "tiketana.com",

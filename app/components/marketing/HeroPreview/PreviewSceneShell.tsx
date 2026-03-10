@@ -23,7 +23,7 @@ export default function PreviewSceneShell({
   return (
     <section className={styles.previewShell}>
       <header className={styles.previewShellHeader}>
-        <Title as="h3" className={styles.previewShellTitle}>
+        <Title variant="PaperMono" as="h3" className={styles.previewShellTitle}>
           <span className={styles.previewShellTitleStack}>
             <AnimatePresence mode="sync" initial={false}>
               <motion.span

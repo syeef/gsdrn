@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "PaperMono-Regular";
+  src: url("/fonts/PaperMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 .editorSection {
   min-height: 0;
   display: grid;
@@ -13,7 +21,7 @@
   padding: 0 0.62rem;
   border-bottom: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
   font-size: var(--f5);
-  font-family: "Hedvig Letters Serif";
+  font-family: "PaperMono-Regular";
   background: linear-gradient(90deg, var(--gray-10) 8%, var(--gray-9) 80%);
   background-clip: text;
   -webkit-background-clip: text;

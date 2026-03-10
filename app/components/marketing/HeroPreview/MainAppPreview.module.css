@@ -1,3 +1,11 @@
+@font-face {
+  font-family: "PaperMono-Regular";
+  src: url("/fonts/PaperMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 .overviewLayout {
   min-height: 0;
   display: grid;
@@ -8,17 +16,16 @@
   min-height: 0;
   display: flex;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
+  border-right: 1px solid var(--gray-1);
   background: rgb(0 0 0 / 66%);
 }
 
 .calendarTimeline {
   --preview-calendar-accent: var(--orange-9);
-  --preview-calendar-grid: var(--gray-4);
+  --preview-calendar-grid: var(--gray-1);
   --preview-hour-height: 34px;
   flex: 1;
   min-height: 0;
-  color: #f5d8a3;
   display: flex;
   overflow: hidden;
 }
@@ -49,16 +56,16 @@
 .calendarHourLabel {
   height: var(--preview-hour-height);
   padding-top: 1px;
-  font-size: 0.48rem;
+  font-size: 0.56rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--preview-calendar-accent);
+  color: var(--gray-9);
   white-space: nowrap;
 }
 
 .calendarGrid {
   position: relative;
-  border-left: 1px solid var(--preview-calendar-accent);
+  border-left: 1px solid var(--gray-1);
   overflow: visible;
 }
 
@@ -85,9 +92,10 @@
   right: 0;
   min-height: 16px;
   padding: 0.2rem 0.34rem;
-  border-radius: 3px;
-  border: 1px solid var(--gray-4);
-  background: var(--gray-7);
+  margin: 0 0.34rem;
+  border-radius: 2px;
+  /* border: 1px solid var(--gray-4); */
+  background: #131313;
   display: grid;
   gap: 0.12rem;
 }
@@ -100,7 +108,7 @@
 }
 
 .calendarEventTitle {
-  font-size: var(--f5);
+  font-size: var(--f6);
   color: var(--gray-10);
   line-height: 1.25;
   letter-spacing: 0.04em;
@@ -110,7 +118,7 @@
 }
 
 .calendarEventTime {
-  font-size: var(--f6);
+  font-size: 0.56rem;
   color: var(--gray-9);
   line-height: 1.2;
   white-space: nowrap;
@@ -122,9 +130,8 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: var(--preview-calendar-accent);
-  box-shadow: 0 0 5px
-    color-mix(in srgb, var(--preview-calendar-accent) 65%, transparent);
+  background: var(--blue-4);
+  box-shadow: 0 0 5px color-mix(in srgb, var(--blue-4) 65%, transparent);
   z-index: 3;
 }
 
@@ -135,9 +142,8 @@
   width: 5px;
   height: 5px;
   border-radius: 999px;
-  background: var(--preview-calendar-accent);
-  box-shadow: 0 0 4px
-    color-mix(in srgb, var(--preview-calendar-accent) 70%, transparent);
+  background: var(--blue-4);
+  box-shadow: 0 0 4px color-mix(in srgb, var(--blue-4) 70%, transparent);
 }
 
 .editorsStack {
@@ -150,23 +156,25 @@
   min-height: 0;
   display: grid;
   grid-template-rows: max-content 1fr;
-  border: 1px solid var(--gray-4);
-  background: #000;
+  /* border: 1px solid var(--gray-4); */
+  /* background: #000; */
 }
 
 .editorTitle {
-  height: 1.95rem;
+  /* height: 1.95rem; */
   display: flex;
   align-items: center;
-  padding: 0 0.62rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--gray-6) 34%, transparent);
-  font-size: var(--f5);
-  font-family: "Hedvig Letters Serif";
-  background: linear-gradient(90deg, var(--gray-10) 8%, var(--gray-9) 80%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  padding: 0.64rem 0.64rem !important;
+  border-top: 1px solid var(--gray-1);
+  border-bottom: 1px solid var(--gray-1);
+  font-size: var(--f6);
+  font-family: "PaperMono-Regular";
+  text-transform: uppercase;
+  color: var(--gray-7);
+}
+
+.editorsStack > .editorSection:first-child .editorTitle {
+  border-top: none;
 }
 
 .editorBody {
@@ -197,7 +205,7 @@
   height: 0.95em;
   margin-top: 0.15em;
   border-radius: 0.18em;
-  border: 1px solid var(--gray-9);
+  border: 1px solid var(--gray-7);
   background: transparent;
   flex: 0 0 auto;
 }
@@ -210,7 +218,7 @@
 .todoText {
   font-size: var(--f5);
   line-height: inherit;
-  color: var(--gray-9);
+  color: var(--gray-10);
 }
 
 .todoTextDone {
@@ -223,7 +231,7 @@
   padding-left: 0.72rem;
   font-size: var(--f5);
   line-height: 1.35;
-  color: var(--gray-9);
+  color: var(--gray-10);
 }
 
 .notesItem::before {
@@ -234,7 +242,7 @@
   width: 0.3rem;
   height: 0.3rem;
   border-radius: 999px;
-  background: var(--gray-8);
+  background: var(--gray-7);
 }
 
 @media (max-width: 760px) {
