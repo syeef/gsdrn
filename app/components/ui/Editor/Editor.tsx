@@ -38,6 +38,10 @@ import {
 import Button from "~/components/ui/Button/Button";
 import { ShinyButton } from "~/components/ui/Button/ShinyButton";
 import { authClient } from "~/lib/auth.client";
+import {
+  applyPendingTodoToggles,
+  type PendingTodoToggle,
+} from "~/utils/editorContent.client";
 import styles from "./Editor.module.css";
 
 export type EditorMode = "notes" | "todos";
@@ -254,8 +258,15 @@ const getDefaultTodosContent = (): YooptaContentValue => {
   };
 };
 
+type CheckboxSaveContextValue = {
+  registerPendingToggle: (toggle: PendingTodoToggle) => void;
+  clearPendingToggle: (blockId: string) => void;
+  triggerSave: () => void;
+};
+
 // Context used to let plugin render components trigger a save.
-const CheckboxSaveContext = React.createContext<(() => void) | null>(null);
+const CheckboxSaveContext =
+  React.createContext<CheckboxSaveContextValue | null>(null);
 const ItemLabelsContext = React.createContext<ItemLabelsById>({});
 
 function ItemLabels({ labels }: { labels: ItemLabel[] }) {
@@ -370,7 +381,8 @@ function TodoListElement({
     const saveIfReady = () => {
       if (!hasExpectedCheckedValue()) return false;
       cleanup();
-      triggerSave?.();
+      triggerSave?.clearPendingToggle(blockId);
+      triggerSave?.triggerSave();
       return true;
     };
 
@@ -379,6 +391,11 @@ function TodoListElement({
     };
 
     editor.on("change", onEditorChange);
+    triggerSave?.registerPendingToggle({
+      blockId,
+      elementId: element.id,
+      checked: nextChecked,
+    });
 
     editor.updateElement({
       blockId,
@@ -391,7 +408,7 @@ function TodoListElement({
     timeoutId = window.setTimeout(() => {
       if (saveIfReady()) return;
       cleanup();
-      triggerSave?.();
+      triggerSave?.triggerSave();
     }, 700);
   }, [editor, blockId, checked, element.id, triggerSave]);
 
@@ -652,6 +669,9 @@ export default function Editor({
   const [dropTarget, setDropTarget] = React.useState<DropTargetState>(null);
   const editorSectionRef = React.useRef<HTMLElement | null>(null);
   const lastFocusLossSaveAtRef = React.useRef(0);
+  const pendingTodoTogglesRef = React.useRef<Map<string, PendingTodoToggle>>(
+    new Map(),
+  );
   const inFlightSaveRef = React.useRef<
     Record<EditorMode, Promise<SaveResult> | null>
   >({
@@ -708,7 +728,14 @@ export default function Editor({
       if (inFlight) return inFlight;
 
       const savePromise = (async (): Promise<SaveResult> => {
-        const content = editorInstance.getEditorValue();
+        const rawContent = editorInstance.getEditorValue();
+        const content =
+          saveMode === "todos"
+            ? applyPendingTodoToggles(
+                rawContent,
+                pendingTodoTogglesRef.current.values(),
+              )
+            : rawContent;
         const contentString = JSON.stringify(content);
         const storageKey = getStorageKey(saveMode, resolvedDateKey);
         const existing = readDraft(storageKey);
@@ -788,11 +815,11 @@ export default function Editor({
 
         try {
           // Persist sequentially to avoid write contention on D1/SQLite.
-          const draftResponse = draftNeedsSync
-            ? await requestPersist("/api/editorDraft")
-            : null;
           const canonicalResponse = canonicalNeedsSync
             ? await requestPersist("/api/editorContent")
+            : null;
+          const draftResponse = draftNeedsSync
+            ? await requestPersist("/api/editorDraft")
             : null;
 
           if (
@@ -930,6 +957,17 @@ export default function Editor({
     },
     [saveEditorContent, trimTrailingEmptyBlocks],
   );
+
+  const registerPendingTodoToggle = React.useCallback(
+    (toggle: PendingTodoToggle) => {
+      pendingTodoTogglesRef.current.set(toggle.blockId, toggle);
+    },
+    [],
+  );
+
+  const clearPendingTodoToggle = React.useCallback((blockId: string) => {
+    pendingTodoTogglesRef.current.delete(blockId);
+  }, []);
 
   const hydrateEditor = React.useCallback(
     async (editorInstance: YooEditor, hydrateMode: EditorMode) => {
@@ -2082,6 +2120,7 @@ export default function Editor({
   React.useEffect(() => {
     hydratedRef.current = { notes: false, todos: false };
     lastSavedRef.current = { notes: null, todos: null };
+    pendingTodoTogglesRef.current.clear();
     setHasUserInteracted(false);
     setItemLabelsById({});
     notesEditor.setEditorValue(getDefaultNotesContent());
@@ -2100,6 +2139,15 @@ export default function Editor({
     [saveEditorContent, todosEditor],
   );
 
+  const checkboxSaveContextValue = React.useMemo<CheckboxSaveContextValue>(
+    () => ({
+      registerPendingToggle: registerPendingTodoToggle,
+      clearPendingToggle: clearPendingTodoToggle,
+      triggerSave: onCheckboxSave,
+    }),
+    [clearPendingTodoToggle, onCheckboxSave, registerPendingTodoToggle],
+  );
+
   return (
     <section
       ref={editorSectionRef}
@@ -2116,7 +2164,7 @@ export default function Editor({
       onDrop={handleDrop}
       onDragLeave={handleDragLeave}
     >
-      <CheckboxSaveContext.Provider value={onCheckboxSave}>
+      <CheckboxSaveContext.Provider value={checkboxSaveContextValue}>
         <ItemLabelsContext.Provider value={itemLabelsById}>
           <YooptaEditor
             editor={activeEditor}
