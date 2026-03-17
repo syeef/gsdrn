@@ -7,7 +7,7 @@ export default function Footer() {
       <Title as="h1" className={styles.footerTitle}>
         Tiketana
       </Title>
-      <div className={styles.footerLinks}>
+      {/* <div className={styles.footerLinks}>
         <span>
           Made by{" "}
           <a className={styles.footerLink} href="https://greeblelabs.io/">
@@ -15,7 +15,7 @@ export default function Footer() {
           </a>
           .
         </span>
-      </div>
+      </div> */}
     </footer>
   );
 }
