@@ -75,38 +75,6 @@ const fadeItem = {
 export default function LogIn() {
   const actionData = useActionData<typeof action>();
   return (
-    // <main
-    //   style={{ maxWidth: 400, margin: "4rem auto", fontFamily: "sans-serif" }}
-    // >
-    //   <h1>Log in to App</h1>
-    //   <Form method="post">
-    //     <p>
-    //       <label>
-    //         Email
-    //         <br />
-    //         <input type="email" name="email" required />
-    //       </label>
-    //     </p>
-    //     <p>
-    //       <label>
-    //         Password
-    //         <br />
-    //         <input type="password" name="password" required />
-    //       </label>
-    //     </p>
-    //     {actionData?.error && (
-    //       <p style={{ color: "red" }}>{actionData.error}</p>
-    //     )}
-    //     <button type="submit">Continue to App</button>
-    //   </Form>
-
-    //   <ButtonSignInWithGoogle />
-
-    //   <p style={{ marginTop: "1rem" }}>
-    //     New to App?<a href="/signup">Sign up</a>
-    //   </p>
-    // </main>
-
     <main className={styles.loginPage}>
       <div className={styles.container}>
         <div className={styles.illustration}></div>
@@ -128,7 +96,7 @@ export default function LogIn() {
             <div className={styles.content}>
               <motion.div className={styles.logoContainer} variants={fadeItem}>
                 <LogoMark color={"#FFFFFF"} height={32} width={32} />
-                <Title variant="Hedvig" as="h2">
+                <Title variant="CrimsonPro" as="h2">
                   Log In to Tiketana
                 </Title>
               </motion.div>

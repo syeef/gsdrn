@@ -1,3 +1,8 @@
+html,
+body {
+  background-color: #000000;
+}
+
 .pageContainer {
   z-index: 2;
   background-color: #000000 !important;
