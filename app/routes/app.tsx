@@ -1,8 +1,9 @@
 // ~/routes/app.tsx
+import * as React from "react";
 import {
   type MetaFunction,
   type LoaderFunctionArgs,
-  redirect,
+  useNavigate,
 } from "react-router";
 import { getAuth } from "~/lib/auth.server";
 import { formatDateKey } from "~/utils/date";
@@ -18,13 +19,20 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
 
   // If not logged in, send them to login
   if (!session) {
-    throw redirect("/login");
+    return Response.redirect("/login", 302);
   }
 
-  const dateKey = formatDateKey(new Date());
-  throw redirect(`/${dateKey}`);
+  return null;
 }
 
 export default function AppRoute() {
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    // Keep the landing route aligned with the browser's local day; using the
+    // server day here can send rollover results to a different page date.
+    navigate(`/${formatDateKey(new Date())}`, { replace: true });
+  }, [navigate]);
+
   return null;
 }
